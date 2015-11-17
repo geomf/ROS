@@ -3,9 +3,9 @@
 class DiffReader
 
   MODELS = {
-      "node"     => PlanetOsmNode,
-      "way"      => PlanetOsmWay,
-      "relation" => PlanetOsmRel
+      'node' => PlanetOsmNode,
+      'way' => PlanetOsmWay,
+      'relation' => PlanetOsmRel
   }
 
   ##
@@ -17,7 +17,7 @@ class DiffReader
     # document that's (re-)used to handle elements expanded out of the
     # diff processing stream.
     @doc = XML::Document.new
-    @doc.root = XML::Node.new("osm")
+    @doc.root = XML::Node.new('osm')
   end
 
   ##
@@ -28,7 +28,7 @@ class DiffReader
     # exception if an error occurs.
     @reader.read
   rescue LibXML::XML::Error => ex
-    raise OSM::APIBadXMLError.new("changeset", xml, ex.message)
+    raise OSM::APIBadXMLError.new('changeset', xml, ex.message)
   end
 
   ##
@@ -80,7 +80,7 @@ class DiffReader
     with_element do |model_name, _model_attributes|
       model = MODELS[model_name]
       fail OSM::APIBadUserInput.new("Unexpected element type #{model_name}, " +
-                                        "expected node, way or relation.") if model.nil?
+                                        'expected node, way or relation.') if model.nil?
       # new in libxml-ruby >= 2, expand returns an element not associated
       # with a document. this means that there's no encoding parameter,
       # which means basically nothing works.
@@ -113,13 +113,13 @@ class DiffReader
 
     # take the first element and check that it is an osmChange element
     @reader.read
-    fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != "osmChange"
+    fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != 'osmChange'
 
 
     # loop at the top level, within the <osmChange> element
     with_element do |action_name, _|
 
-      if action_name == "create"
+      if action_name == 'create'
         with_model do |model, model_name,  xml|
 
           element = model.new
@@ -128,10 +128,10 @@ class DiffReader
 
           save_members if defined?(save_members)   #TODO: do it better
 
-          store_placeholder(xml["id"].to_i, element.id, model,model_name,xml)
+          store_placeholder(xml['id'].to_i, element.id, model,model_name,xml)
 
         end
-      elsif action_name == "modify"
+      elsif action_name == 'modify'
         with_model do |model, model_name,  xml|
 
           fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
@@ -146,9 +146,9 @@ class DiffReader
 
         end
 
-      elsif action_name == "delete"
+      elsif action_name == 'delete'
         with_model do |model, _,  xml|
-          id = xml["id"].to_i
+          id = xml['id'].to_i
 
           element = model.find(id)
           element.delete_from
@@ -167,7 +167,7 @@ class DiffReader
 
     # check if the placeholder ID has been given before and throw
     # an exception if it has - we can't create the same element twice.
-    fail OSM::APIBadUserInput.new("Placeholder IDs must be unique for created elements.") if $ids[model_name.to_sym].include? placeholder_id
+    fail OSM::APIBadUserInput.new('Placeholder IDs must be unique for created elements.') if $ids[model_name.to_sym].include? placeholder_id
 
     # save placeholder => allocated ID map
     $ids[model_name.to_sym][placeholder_id] = new_id

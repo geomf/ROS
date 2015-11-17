@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 begin
-  load File.expand_path("../spring", __FILE__)
+  load File.expand_path('../spring', __FILE__)
 rescue LoadError
 end
 APP_PATH = File.expand_path('../../config/application', __FILE__)
@@ -15,7 +15,7 @@ cert_name = [
 
 require 'webrick'
 require 'webrick/https'
-require "rails/commands/server"
+require 'rails/commands/server'
 
 module Rails
   class Server < ::Rack::Server

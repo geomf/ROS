@@ -8,7 +8,7 @@ gem 'pg'
 # use postgis addon to ruby
 gem 'activerecord-postgis-adapter'
 # Load libxml support for XML parsing and generation
-gem "libxml-ruby", ">= 2.0.5", :require => "libxml"
+gem 'libxml-ruby', '>= 2.0.5', :require => 'libxml'
 #Allow to fix cross-orign problem
 gem 'rack-cors'
 

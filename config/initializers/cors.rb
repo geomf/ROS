@@ -1,4 +1,4 @@
-require "rack/cors"
+require 'rack/cors'
 
 # Mark CORS responses as uncacheable as we don't want a browser to
 # try and reuse a response that had a different origin, even with
@@ -7,8 +7,8 @@ module RailsOMF
   class Cors < Rack::Cors
     def call(env)
       status, headers, body = super env
-      if headers["Access-Control-Allow-Origin"]
-        headers["Cache-Control"] = "no-cache"
+      if headers['Access-Control-Allow-Origin']
+        headers['Cache-Control'] = 'no-cache'
       end
       [status, headers, body]
     end
@@ -22,8 +22,8 @@ end
 # such as X-Requested-By to requests.)
 Rails.configuration.middleware.use RailsOMF::Cors do
   allow do
-    origins "*"
-    resource "/api/*",
+    origins '*'
+    resource '/api/*',
       #:headers => ['Origin', 'Accept', 'Content-Type'],
       :headers => :any,
       :methods => [:get, :post, :put, :delete]

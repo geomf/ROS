@@ -27,7 +27,7 @@ class ApiController < ApplicationController
 
     ways.each do |way|
       nodes_id += way.nodes
-      append_to_relation(relations_id, way, "configuration")
+      append_to_relation(relations_id, way, 'configuration')
 
       doc.root << way.to_xml_node
     end
@@ -107,8 +107,8 @@ class ApiController < ApplicationController
 
 
   def list
-    type_name = params["type_name"]
-    model = params["model"]
+    type_name = params['type_name']
+    model = params['model']
 
     unless params[type_name]
       fail OSM::APIBadUserInput.new("The parameter #{type_name} is required, and must be of the form #{type_name}=id[,id[,id...]]")
@@ -126,7 +126,7 @@ class ApiController < ApplicationController
       doc.root << element.to_xml_node
     end
 
-    render :text => doc.to_s, :content_type => "text/xml"
+    render :text => doc.to_s, :content_type => 'text/xml'
   end
 
 

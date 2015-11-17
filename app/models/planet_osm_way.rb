@@ -7,8 +7,8 @@ class PlanetOsmWay < ActiveRecord::Base
 
   def add_additional_nodes(el)
     self.nodes.each do |nd_id|
-      node_el = XML::Node.new "nd"
-      node_el["ref"] = nd_id.to_s
+      node_el = XML::Node.new 'nd'
+      node_el['ref'] = nd_id.to_s
       el << node_el
     end
 
@@ -27,8 +27,8 @@ class PlanetOsmWay < ActiveRecord::Base
   def create_additional_nodes_from_xml(pt)
     self.nodes = []
 
-    pt.find("nd").each do |nd|
-      id = nd["ref"].to_i
+    pt.find('nd').each do |nd|
+      id = nd['ref'].to_i
       self.nodes << id
     end
 
@@ -48,7 +48,7 @@ class PlanetOsmWay < ActiveRecord::Base
 
   def validate_element(pt)
 
-    nodes = pt.find("nd")
+    nodes = pt.find('nd')
     return false if nodes.empty?
 
     #TODO: Verify if only 2 should be avaliable
