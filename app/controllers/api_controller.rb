@@ -1,8 +1,7 @@
 class ApiController < ApplicationController
   require 'xml/libxml'
 
-  SUPER_CONFIG_TAGS = ["spacing", "conductor_N", "conductor_A", "conductor_B", "conductor_C"]
-
+  SUPER_CONFIG_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C)
   #
   # First the
   # bounding box (bbox) is checked to make sure that it is sane. All nodes

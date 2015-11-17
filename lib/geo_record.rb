@@ -45,7 +45,7 @@ module GeoRecord
   end
 
 
-  def delete_from()
+  def delete_from
     self.class.transaction do
       self.lock!
 

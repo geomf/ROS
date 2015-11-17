@@ -117,7 +117,7 @@ class DiffReader
 
 
     # loop at the top level, within the <osmChange> element
-    with_element do |action_name, action_attributes|
+    with_element do |action_name, _|
 
       if action_name == "create"
         with_model do |model, model_name,  xml|
@@ -134,7 +134,7 @@ class DiffReader
       elsif action_name == "modify"
         with_model do |model, model_name,  xml|
 
-          fail OSM::APIBadXMLError.new(model_name, pt, 'ID is required when updating.') if xml['id'].nil?
+          fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
           id = xml['id'].to_i
           # .to_i will return 0 if there is no number that can be parsed.
           # We want to make sure that there is no id with zero anyway
@@ -147,7 +147,7 @@ class DiffReader
         end
 
       elsif action_name == "delete"
-        with_model do |model, model_name,  xml|
+        with_model do |model, _,  xml|
           id = xml["id"].to_i
 
           element = model.find(id)

@@ -75,7 +75,7 @@ class PlanetOsmWay < ActiveRecord::Base
   # if any referenced nodes are placeholder IDs (i.e: are negative) then
   # this calling this method will fix them using the map from placeholders
   # to IDs +id_map+.
-  def fix_placeholders()
+  def fix_placeholders
     nodes.map! do |node_id|
       if node_id < 0
         new_id = $ids[:node][node_id]
