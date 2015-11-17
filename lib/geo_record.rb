@@ -2,7 +2,7 @@ module GeoRecord
 #  self.abstract_class = true
   require "xml/libxml"
 
-  UNSHOWN_TAGS = ["configuration","spacing","conductor_N", "conductor_A", "conductor_B", "conductor_C"]
+  UNSHOWN_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C)
 
   # from map request for vector tiles
   def to_xml_node
@@ -67,9 +67,10 @@ module GeoRecord
   end
 
   def add_tags_to_xml_node(el)
+    add_tag_to_xml(el, "name", self.name)
     add_tag_to_xml(el, "power", self.power)
     self.tags.each do |key, value|
-      add_tag_to_xml(el, key, value) unless UNSHOWN_TAGS.include?(key) unless value.nil?
+      add_tag_to_xml(el, "power:" + key, value) unless UNSHOWN_TAGS.include?(key) unless value.nil?
     end
   end
 

@@ -4,12 +4,17 @@ class PlanetOsmRel < ActiveRecord::Base
   def osm_name; 'relation' end
 
 
+  SUPER_RELATION = %w(spacing conductor_N conductor_A conductor_B conductor_C)
+
   def add_additional_nodes(el)
     members_edge = PlanetOsmWay.where("tags @> hstore(:key, :value)", key: "configuration", value: id.to_s).pluck(:id)
     add_members_to_xml(el, members_edge, "way")
 
-    members_rel = PlanetOsmRel.where("tags @> hstore(:key, :value)", key: "spacing", value: id.to_s).pluck(:id)
-    add_members_to_xml(el, members_rel, "relation")
+    members_rel = []
+    SUPER_RELATION.each do |super_rel|
+      members_rel += PlanetOsmRel.where("tags @> hstore(:key, :value)", key: super_rel, value: id.to_s).pluck(:id)
+    end
+    add_members_to_xml(el, members_rel, 'relation')
 
 
     add_tag_to_xml(el, 'name', name)
