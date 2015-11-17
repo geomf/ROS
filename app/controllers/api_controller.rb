@@ -1,7 +1,7 @@
 class ApiController < ApplicationController
   require 'xml/libxml'
 
-  @@super_config_tags = ["spacing", "conductor_N", "conductor_A", "conductor_B", "conductor_C"]
+  SUPER_CONFIG_TAGS = ["spacing", "conductor_N", "conductor_A", "conductor_B", "conductor_C"]
 
   #
   # First the
@@ -24,7 +24,7 @@ class ApiController < ApplicationController
     relations_id = []
 
 
-    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText('POLYGON((#{bbox.max_lon} #{bbox.min_lat}, #{bbox.max_lon} #{bbox.max_lat}, #{bbox.min_lon} #{bbox.max_lat}, #{bbox.min_lon} #{bbox.min_lat}, #{bbox.max_lon} #{bbox.min_lat}))', 4326), 900913))")
+    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{bbox.get_polygon}, 4326), 900913))")
 
     ways.each do |way|
       nodes_id += way.nodes
@@ -47,7 +47,7 @@ class ApiController < ApplicationController
       relation = PlanetOsmRel.find(relation_id)
 
 
-      @@super_config_tags.each do |tag_name|
+      SUPER_CONFIG_TAGS.each do |tag_name|
         append_to_relation(all_relations_id, relation, tag_name)
       end
     end

@@ -22,7 +22,7 @@ class PlanetOsmRel < ActiveRecord::Base
     @members = pt.find("member")
 
     # some elements may have placeholders for other elements, so we must fix these before saving the element.
-    fix_placeholders!
+    fix_placeholders
 
   end
 
@@ -50,8 +50,8 @@ class PlanetOsmRel < ActiveRecord::Base
   def check_if_can_be_deleted?
 
     # TODO: find all memebers and delete referation to this element.
-    rel = joins(:relation).find_by("member_type = 'Relation' AND member_id = ? ", id)
-    fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
+    #rel = joins(:relation).find_by("member_type = 'Relation' AND member_id = ? ", id)
+    #fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
   end
 
 
@@ -60,7 +60,7 @@ class PlanetOsmRel < ActiveRecord::Base
   # if any members are referenced by placeholder IDs (i.e: negative) then
   # this calling this method will  fix them using the map from placeholders
   # to IDs +id_map+.
-  def fix_placeholders!
+  def fix_placeholders
     self.nodes.each do |node|
     #nodes.map! do |type, id, role|
       old_id = node["id"]

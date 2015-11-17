@@ -21,6 +21,10 @@ class BoundingBox
     from_bbox_array(bbox_array)
   end
 
+  def get_polygon
+    "'POLYGON((#{max_lon} #{min_lat}, #{max_lon} #{max_lat}, #{min_lon} #{max_lat}, #{min_lon} #{min_lat}, #{max_lon} #{min_lat}))'"
+  end
+
 
 =begin
   def check_boundaries
