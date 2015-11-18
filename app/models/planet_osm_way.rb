@@ -4,14 +4,12 @@ class PlanetOsmWay < ActiveRecord::Base
 
   def osm_name; 'way' end
 
-
   def add_additional_nodes(el)
     self.nodes.each do |nd_id|
       node_el = XML::Node.new 'nd'
       node_el['ref'] = nd_id.to_s
       el << node_el
     end
-
 
     add_tag_to_xml(el, 'oneway', 'yes')
 =begin
@@ -22,7 +20,6 @@ class PlanetOsmWay < ActiveRecord::Base
 
     #do not send self.way in XML
   end
-
 
   def create_additional_nodes_from_xml(pt)
     self.nodes = []
@@ -38,16 +35,11 @@ class PlanetOsmWay < ActiveRecord::Base
     self.way = create_way_as_geo_element(nodes)
   end
 
-
-
-
   def check_if_can_be_deleted?
     true
   end
 
-
   def validate_element(pt)
-
     nodes = pt.find('nd')
     return false if nodes.empty?
 
@@ -69,8 +61,6 @@ class PlanetOsmWay < ActiveRecord::Base
     true
   end
 
-
-
   ##
   # if any referenced nodes are placeholder IDs (i.e: are negative) then
   # this calling this method will fix them using the map from placeholders
@@ -86,5 +76,4 @@ class PlanetOsmWay < ActiveRecord::Base
       end
     end
   end
-
 end

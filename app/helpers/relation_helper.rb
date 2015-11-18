@@ -1,5 +1,4 @@
 module RelationHelper
-
   def add_members_to_xml(el, members, type)
     members.each do |member|
       member_el = XML::Node.new 'member'

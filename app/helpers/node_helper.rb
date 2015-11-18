@@ -13,7 +13,6 @@ module NodeHelper
     return SM_A * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad)) * 100
   end
 
-
   def convert_lon_from_mercator(old_lon)
     lon_rad = old_lon.to_f / 100 / SM_A
     return lon_rad * 180.0 / Math::PI
@@ -25,12 +24,9 @@ module NodeHelper
     return lat_rad * 180.0 / Math::PI * 2 - 90
   end
 
-
-
   def in_world?
-    return false if lat < -90 || lat > 90
-    return false if lon < -180 || lon > 180
+#    return false if lat < -90 || lat > 90
+#    return false if lon < -180 || lon > 180
     true
   end
-
 end

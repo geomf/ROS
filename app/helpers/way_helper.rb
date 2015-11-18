@@ -1,7 +1,6 @@
 module WayHelper
-
   def create_way_as_geo_element(nodes)
-    factory = RGeo::Cartesian.factory(:srid => 900913)
+    factory = RGeo::Cartesian.factory(srid: 900913)
     points = []
 
     nodes.each do |nd_id|
@@ -11,5 +10,4 @@ module WayHelper
 
     return factory.line_string(points)
   end
-
 end
