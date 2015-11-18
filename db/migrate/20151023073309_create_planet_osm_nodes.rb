@@ -8,6 +8,7 @@ class CreatePlanetOsmNodes < ActiveRecord::Migration
 
       t.integer :lat
       t.integer :lon
+      t.st_point :geo_point, srid:900913
     end
   end
 end

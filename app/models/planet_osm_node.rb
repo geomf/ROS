@@ -11,6 +11,7 @@ class PlanetOsmNode < ActiveRecord::Base
   def create_additional_nodes_from_xml(pt)
     self.lon = convert_lon_to_mercator(pt['lon'])
     self.lat = convert_lat_to_mercator(pt['lat'])
+    self.geo_point = create_point_as_geo_element(self.lat, self.lon)
   end
 
   def check_if_can_be_deleted?

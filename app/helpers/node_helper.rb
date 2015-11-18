@@ -23,6 +23,11 @@ module NodeHelper
     return lat_rad * 180.0 / Math::PI * 2 - 90
   end
 
+  def create_point_as_geo_element(lat, lon)
+    factory = RGeo::Cartesian.factory(srid: 900913)
+    return factory.point(lon / 100.0, lat / 100.0)
+  end
+
   def in_world?
 #    return false if lat < -90 || lat > 90
 #    return false if lon < -180 || lon > 180
