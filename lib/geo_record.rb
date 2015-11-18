@@ -1,5 +1,5 @@
 module GeoRecord
-#  self.abstract_class = true
+  # self.abstract_class = true
   require 'xml/libxml'
 
   UNSHOWN_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C)
@@ -14,7 +14,6 @@ module GeoRecord
 
     el
   end
-
 
   # Read in xml as text and return it's  object representation
   def fill_using_xml!(pt)
@@ -31,19 +30,16 @@ module GeoRecord
 
     # Add in any tags from the XML
     pt.find('tag').each do |tag|
-      validate_tag(pt,tag)
+      validate_tag(pt, tag)
 
       self.tags[tag['k']] = tag['v'] unless tag['k'] == 'power'
       self.power = tag['v'] if tag['k'] == 'power'
     end
 
-
-
     create_additional_nodes_from_xml(pt)
 
     save
   end
-
 
   def delete_from
     self.class.transaction do
@@ -52,12 +48,6 @@ module GeoRecord
       self.delete if check_if_can_be_deleted?
     end
   end
-
-
-
-
-
-
 
   def add_tag_to_xml(el, key, value)
     tag_el = XML::Node.new 'tag'
@@ -74,8 +64,6 @@ module GeoRecord
     end
   end
 
-
-
   def validate_basics(pt)
     # if name is
     # if feeder ID
@@ -83,12 +71,9 @@ module GeoRecord
     # fail OSM::APIPreconditionFailedError.new("Cannot create #{model_name}: data is invalid.")
   end
 
-
-  def validate_tag(pt,tag)
+  def validate_tag(pt, tag)
     fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing key') if tag['k'].nil?
     fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing value') if tag['v'].nil?
     fail OSM::APIDuplicateTagsError.new('geoElement', id, tag['k']) if tags.include? tag['k']
   end
-
-
 end

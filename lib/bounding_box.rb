@@ -64,7 +64,6 @@ class BoundingBox
   end
 =end
 
-
   def width
     max_lon - min_lon
   end
@@ -72,10 +71,6 @@ class BoundingBox
   def height
     max_lat - min_lat
   end
-
-
-
-
 
   def to_a
     [min_lon, min_lat, max_lon, max_lat]

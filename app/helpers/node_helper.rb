@@ -16,11 +16,10 @@ module NodeHelper
   def convert_lon_from_mercator(old_lon)
     lon_rad = old_lon.to_f / 100 / SM_A
     return lon_rad * 180.0 / Math::PI
-
   end
 
   def convert_lat_from_mercator(old_lat)
-    lat_rad = Math.atan(Math.exp(old_lat.to_f / 100 /SM_A))
+    lat_rad = Math.atan(Math.exp(old_lat.to_f / 100 / SM_A))
     return lat_rad * 180.0 / Math::PI * 2 - 90
   end
 

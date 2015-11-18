@@ -25,8 +25,7 @@ Rails.configuration.middleware.use RailsOMF::Cors do
     origins '*'
     resource '/api/*',
       #:headers => ['Origin', 'Accept', 'Content-Type'],
-      :headers => :any,
-      :methods => [:get, :post, :put, :delete]
-
+      headers: :any,
+      methods: [:get, :post, :put, :delete]
   end
 end

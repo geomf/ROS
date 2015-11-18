@@ -5,7 +5,7 @@ module WayHelper
 
     nodes.each do |nd_id|
       node = PlanetOsmNode.find(nd_id)
-      points << factory.point(node.lon/100.0, node.lat/100.0)
+      points << factory.point(node.lon / 100.0, node.lat / 100.0)
     end
 
     return factory.line_string(points)

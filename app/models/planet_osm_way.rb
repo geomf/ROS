@@ -18,7 +18,7 @@ class PlanetOsmWay < ActiveRecord::Base
     end
 =end
 
-    #do not send self.way in XML
+    # do not send self.way in XML
   end
 
   def create_additional_nodes_from_xml(pt)
@@ -43,13 +43,13 @@ class PlanetOsmWay < ActiveRecord::Base
     nodes = pt.find('nd')
     return false if nodes.empty?
 
-    #TODO: Verify if only 2 should be avaliable
+    # TODO: Verify if only 2 should be avaliable
     if nodes.length < 2
       fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2)
     end
 
 =begin
-   #TODO: check if nodes_id are already in db
+   # TODO: check if nodes_id are already in db
     finded_nodes = PlanetOsmNode.find(nodes)
     db_nds = PlanetOsmNode.where(:id => new_nds).lock("for share")
 

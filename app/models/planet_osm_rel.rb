@@ -54,7 +54,7 @@ class PlanetOsmRel < ActiveRecord::Base
   # to IDs +id_map+.
   def fix_placeholders
     self.nodes.each do |node|
-    #nodes.map! do |type, id, role|
+      # nodes.map! do |type, id, role|
       old_id = node['id']
       if old_id < 0
         new_id = $ids[node['type']][old_id]

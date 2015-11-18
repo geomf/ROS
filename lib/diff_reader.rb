@@ -109,7 +109,7 @@ class DiffReader
   # an exception subclassing OSM::APIError will be thrown.
   def commit
     # data structure used for mapping placeholder IDs to real IDs
-    $ids = { :node => {}, :way => {}, :relation => {} }
+    $ids = { node: {}, way: {}, relation: {} }
 
     # take the first element and check that it is an osmChange element
     @reader.read
@@ -125,14 +125,12 @@ class DiffReader
           element = model.new
           element.fill_using_xml!(xml)
 
-
-          save_members if defined?(save_members)   #TODO: do it better
+          save_members if defined?(save_members)   # TODO: do it better
 
           store_placeholder(xml['id'].to_i, element.id, model,model_name,xml)
-
         end
       elsif action_name == 'modify'
-        with_model do |model, model_name,  xml|
+        with_model do |model, model_name, xml|
 
           fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
           id = xml['id'].to_i
@@ -140,14 +138,12 @@ class DiffReader
           # We want to make sure that there is no id with zero anyway
           fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if self.id == 0
 
-
           element = model.find(id)
           element.fill_using_xml!(xml)
-
         end
 
       elsif action_name == 'delete'
-        with_model do |model, _,  xml|
+        with_model do |model, _, xml|
           id = xml['id'].to_i
 
           element = model.find(id)
@@ -160,7 +156,7 @@ class DiffReader
     end
   end
 
-  def store_placeholder(placeholder_id, new_id, model,model_name,xml)
+  def store_placeholder(placeholder_id, new_id, model, model_name, xml)
     # when this element is saved it will get a new ID, so we save it
     # to produce the mapping which is sent to other elements.
     fail OSM::APIBadXMLError.new(model, xml) if placeholder_id.nil?
@@ -172,5 +168,4 @@ class DiffReader
     # save placeholder => allocated ID map
     $ids[model_name.to_sym][placeholder_id] = new_id
   end
-
 end
