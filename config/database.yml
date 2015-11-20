@@ -14,6 +14,9 @@ default: &default
   username: chesser
   password: Intel0mf
 
+  database: osm_rps_dev
+  host: osm-geo-db.cjsltrtsfo8x.eu-west-1.rds.amazonaws.com
+
 development:
   <<: *default
   database: ROS_development
