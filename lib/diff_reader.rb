@@ -125,8 +125,6 @@ class DiffReader
           element = model.new
           element.fill_using_xml!(xml)
 
-          save_members if defined?(save_members)   # TODO: do it better
-
           store_placeholder(xml['id'].to_i, element.id, model,model_name,xml)
         end
       elsif action_name == 'modify'
@@ -136,7 +134,7 @@ class DiffReader
           id = xml['id'].to_i
           # .to_i will return 0 if there is no number that can be parsed.
           # We want to make sure that there is no id with zero anyway
-          fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if self.id == 0
+          # fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if id == 0
 
           element = model.find(id)
           element.fill_using_xml!(xml)

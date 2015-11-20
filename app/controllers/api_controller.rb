@@ -22,6 +22,7 @@ class ApiController < ApplicationController
     relations_id = []
 
     ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{bbox.get_polygon}, 4326), 900913))")
+    # TODO: verify if & is needed
     nodes_id = PlanetOsmNode.where("ST_Intersects(geo_point, ST_Transform(ST_GeomFromText(#{bbox.get_polygon}, 4326), 900913))").map(&:id)
 
     ways.each do |way|

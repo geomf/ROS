@@ -12,25 +12,15 @@ class PlanetOsmWay < ActiveRecord::Base
     end
 
     add_tag_to_xml(el, 'oneway', 'yes')
-=begin
-    unless self.tags["configuration"].nil?
-      add_tag_to_xml(el, 'ref', self.tags["configuration"])
-    end
-=end
-
-    # do not send self.way in XML
   end
 
-  def create_additional_nodes_from_xml(pt)
+  def fill_other_fields_using_xml(pt)
     self.nodes = []
 
     pt.find('nd').each do |nd|
-      id = nd['ref'].to_i
-      self.nodes << id
+      proper_id = get_fixed_placeholder_id(nd['ref'].to_i, :node)
+      self.nodes << proper_id
     end
-
-    # some elements may have placeholders for other elements, so we must fix these before saving the element.
-    fix_placeholders
 
     self.way = create_way_as_geo_element(nodes)
   end
@@ -43,7 +33,7 @@ class PlanetOsmWay < ActiveRecord::Base
     nodes = pt.find('nd')
     return false if nodes.empty?
 
-    # TODO: Verify if only 2 should be avaliable
+    # TODO: Verify if only 2 should be available
     if nodes.length < 2
       fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2)
     end
@@ -59,21 +49,5 @@ class PlanetOsmWay < ActiveRecord::Base
     end
 =end
     true
-  end
-
-  ##
-  # if any referenced nodes are placeholder IDs (i.e: are negative) then
-  # this calling this method will fix them using the map from placeholders
-  # to IDs +id_map+.
-  def fix_placeholders
-    nodes.map! do |node_id|
-      if node_id < 0
-        new_id = $ids[:node][node_id]
-        fail OSM::APIBadUserInput.new("Placeholder node not found for reference #{node_id} in way #{id.nil? ? placeholder_id : id}") if new_id.nil?
-        new_id
-      else
-        node_id
-      end
-    end
   end
 end

@@ -3,42 +3,49 @@ class PlanetOsmRel < ActiveRecord::Base
   include RelationHelper
   def osm_name; 'relation' end
 
-  SUPER_RELATION = %w(spacing conductor_N conductor_A conductor_B conductor_C)
-
   def add_additional_nodes(el)
-    members_edge = PlanetOsmWay.where('tags @> hstore(:key, :value)', key: 'configuration', value: id.to_s).pluck(:id)
-    add_members_to_xml(el, members_edge, 'way')
-
-    members_rel = []
-    SUPER_RELATION.each do |super_rel|
-      members_rel += PlanetOsmRel.where('tags @> hstore(:key, :value)', key: super_rel, value: id.to_s).pluck(:id)
-    end
-    add_members_to_xml(el, members_rel, 'relation')
+    relations = gather_all_relations
+    add_members_to_xml(el, relations)
 
     add_tag_to_xml(el, 'route', 'power')
     add_tag_to_xml(el, 'type', 'route')
   end
 
-  def create_additional_nodes_from_xml(pt)
-    @members = pt.find('member')
+  def fill_other_fields_using_xml(pt)
+    @new_members = {}
+    pt.find('member').each do |member|
+      @new_members[member['role']] ||= []
 
-    # some elements may have placeholders for other elements, so we must fix these before saving the element.
-    fix_placeholders
+      proper_id = get_fixed_placeholder_id(member['ref'].to_i, member['type'])
+      @new_members[member['role']].append(proper_id)
+    end
   end
 
-  def save_members
-    members = self.members.clone
+  def after_save
+    old_members = gather_all_relations
 
-#    todelete = old_memebers - members
-#    toadd = members - old_memebers
+    to_add_or_change = @new_members
+    to_delete = subtract(old_members, @new_members)
 
-    @members.each do |member|
-      element = PlanetOsmRel.find(id: member['ref'].to_i) if member['type'] == 'relation'
-      element = PlanetOsmWay.find(id: member['ref'].to_i) if member['type'] == 'way'
+    modify_rel = Proc.new {|element, member_role, member_id| element.tags[member_role] = member_id}
+    update(to_add_or_change, modify_rel)
 
-      #RelationMember.create(type: member["type"], element_id: member["ref"].to_i, rel_id: self.id)
+    delete_rel = Proc.new {|element, member_role, _| element.tags.delete(member_role)}
+    update(to_delete, delete_rel)
+  end
 
-      fail OSM::APIBadXMLError.new('relation', member, "The #{member['type']} is not allowed only") unless TYPES.include? member['type']
+  def update(members, action)
+    members.each do |rel_role, relations|
+      model = (rel_role == 'configuration') ? PlanetOsmWay : PlanetOsmRel
+
+      relations.each do |member_id|
+        element = model.find(member_id)
+
+        action.call(element, rel_role, self.id)
+        element.save
+      end
+
+      # fail OSM::APIBadXMLError.new('relation', member, "The #{member['type']} is not allowed only") unless TYPES.include? member['type']
     end
   end
 
@@ -48,23 +55,8 @@ class PlanetOsmRel < ActiveRecord::Base
     # fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
   end
 
-  ##
-  # if any members are referenced by placeholder IDs (i.e: negative) then
-  # this calling this method will  fix them using the map from placeholders
-  # to IDs +id_map+.
-  def fix_placeholders
-    self.nodes.each do |node|
-      # nodes.map! do |type, id, role|
-      old_id = node['id']
-      if old_id < 0
-        new_id = $ids[node['type']][old_id]
-        fail OSM::APIBadUserInput.new("Placeholder #{node['type']} not found for reference #{old_id} in relation #{self.id.nil? ? placeholder_id : self.id}.") if new_id.nil?
-        node['id'] = new_id
-      end
-    end
-  end
 
   def validate_element(_)
-    fail OSM::APIPreconditionFailedError.new("Cannot update relation #{id}: data or member data is invalid.")
+    # fail OSM::APIPreconditionFailedError.new("Cannot update relation #{id}: data or member data is invalid.")
   end
 end

@@ -8,7 +8,7 @@ class PlanetOsmNode < ActiveRecord::Base
     el['lon'] = convert_lon_from_mercator(self.lon).to_s
   end
 
-  def create_additional_nodes_from_xml(pt)
+  def fill_other_fields_using_xml(pt)
     self.lon = convert_lon_to_mercator(pt['lon'])
     self.lat = convert_lat_to_mercator(pt['lat'])
     self.geo_point = create_point_as_geo_element(self.lat, self.lon)
