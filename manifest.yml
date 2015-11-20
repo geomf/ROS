@@ -1,0 +1,9 @@
+---
+applications:
+- name: ros
+  memory: 256M
+  instances: 1
+  path: .
+  command: bundle exec rails s -p $PORT -b 0.0.0.0
+#  services:
+#    - rails-postgres

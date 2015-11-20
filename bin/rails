@@ -11,7 +11,7 @@ require_relative '../config/boot'
 cert_name = [
     %w[CN localhost],
 ]
-=end
+$=end
 
 require 'webrick'
 require 'webrick/https'
@@ -21,8 +21,8 @@ module Rails
   class Server < ::Rack::Server
     def default_options
       super.merge({
-                      Port: 1180,
-                      Host: '0.0.0.0',
+=begin                      Port: 1180,
+                     Host: '0.0.0.0',
 =begin  SSL
 #                      :environment => (ENV['RAILS_ENV'] || "development").dup,
 #                      :daemonize => false,
@@ -36,10 +36,10 @@ module Rails
 #                      :SSLCertificate => OpenSSL::X509::Certificate.new(
 #                          File.open("certs/server.crt").read),
                       :SSLCertName => [["CN", WEBrick::Utils::getservername]],      #cert_name
-=end
+#=end
                   })
     end
   end
 end
-
+=end
 require 'rails/commands'
