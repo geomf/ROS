@@ -1,4 +1,5 @@
 module GeoHelper
+  SUPER_RELATION_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C)
   RELATION_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C)
 
   def add_other_tags_to_xml_node(el)

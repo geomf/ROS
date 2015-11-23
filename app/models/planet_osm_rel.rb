@@ -4,7 +4,7 @@ class PlanetOsmRel < ActiveRecord::Base
   def osm_name; 'relation' end
 
   def add_additional_nodes(el)
-    relations = gather_all_relations
+    relations = (self.power.end_with?('_configuration')) ? gather_normal_relations : gather_super_relations
     add_members_to_xml(el, relations)
 
     add_tag_to_xml(el, 'route', 'power')

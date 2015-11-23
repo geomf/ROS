@@ -32,27 +32,27 @@ class ApiController < ApplicationController
       doc.root << way.to_xml_node
     end
 
-    nodes_id.uniq.each do |node_id|
-      point = PlanetOsmNode.find(node_id)
+    points = PlanetOsmNode.find(nodes_id.uniq)
+    points.each do |point|
       doc.root << point.to_xml_node
     end
 
-    all_relations_id = []
-    relations_id.uniq.each do |relation_id|
-      all_relations_id.append(relation_id)
+    super_relations_id = []
 
-      relation = PlanetOsmRel.find(relation_id)
-
+    relations = PlanetOsmRel.find(relations_id.uniq)
+    relations.each do |relation|
       SUPER_CONFIG_TAGS.each do |tag_name|
-        append_to_relation(all_relations_id, relation, tag_name)
+        append_to_relation(super_relations_id, relation, tag_name)
       end
-    end
-
-    all_relations_id.uniq.each do |relation_id|
-      relation = PlanetOsmRel.find(relation_id)
-
       doc.root << relation.to_xml_node
     end
+
+    super_relations = PlanetOsmRel.find(super_relations_id.uniq)
+    super_relations.each do |super_relation|
+      doc.root << super_relation.to_xml_node
+    end
+
+
 
     response.headers['Content-Disposition'] = "attachment; filename=\"map.osm\""
 
