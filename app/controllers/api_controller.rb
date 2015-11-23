@@ -52,31 +52,19 @@ class ApiController < ApplicationController
       doc.root << super_relation.to_xml_node
     end
 
-
-
     response.headers['Content-Disposition'] = "attachment; filename=\"map.osm\""
 
-    render :text => doc.to_s, :content_type => 'text/xml'
+    render text: doc.to_s, content_type: 'text/xml'
   end
 
   def append_to_relation(array, element, tag_name)
     array.append(element.tags[tag_name]) unless element.tags[tag_name].nil?
   end
 
-  # External apps that use the api are able to query the api to find out some
-  # parameters of the API. It currently returns:
-  # * minimum and maximum API versions that can be used.
-  # * maximum area that can be requested in a bbox request in square degrees
-  # * number of tracepoints that are returned in each tracepoints page
+  # do we need this method? maybe use it to send API version
   def capabilities
     doc = OSM::API.new.get_xml_doc
-=begin
-    api = XML::Node.new "api"
-    version = XML::Node.new "version"
-    version["minimum"] = "0.6"    # "#{API_VERSION}"
-    api << version
-    doc.root << api
-=end
+
     render text: doc.to_s, content_type: 'text/xml'
   end
 

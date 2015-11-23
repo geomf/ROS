@@ -19,7 +19,7 @@ module GeoHelper
     tags = {}
     pt.find('tag').each do |tag|
       validate_tag(pt, tag)
-      tag['k'].slice! ("power:")
+      tag['k'].slice!('power:')
       tags[tag['k']] = tag['v']
     end
     tags

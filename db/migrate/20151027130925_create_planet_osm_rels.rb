@@ -9,5 +9,3 @@ class CreatePlanetOsmRels < ActiveRecord::Migration
     end
   end
 end
-
-

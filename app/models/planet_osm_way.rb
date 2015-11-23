@@ -38,16 +38,14 @@ class PlanetOsmWay < ActiveRecord::Base
       fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2)
     end
 
-=begin
-   # TODO: check if nodes_id are already in db
-    finded_nodes = PlanetOsmNode.find(nodes)
-    db_nds = PlanetOsmNode.where(:id => new_nds).lock("for share")
+    # TODO: check if nodes_id are already in db
+    # finded_nodes = PlanetOsmNode.find(nodes)
+    # db_nds = PlanetOsmNode.where(:id => new_nds).lock("for share")
 
-    if db_nds.length < new_nds.length
-      missing = new_nds - db_nds.collect(&:id)
-      fail OSM::APIPreconditionFailedError.new("Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist.")
-    end
-=end
-    true
+    # if found_nodes.length < nodes.length
+    #  missing = new_nds - db_nds.collect(&:id)
+    #  fail OSM::APIPreconditionFailedError.new("Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist.")
+    # end
+
   end
 end

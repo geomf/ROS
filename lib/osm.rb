@@ -2,7 +2,6 @@
 module OSM
   require 'xml/libxml'
 
-
   # The base class for API Errors.
   class APIError < RuntimeError
     def status
@@ -209,7 +208,6 @@ module OSM
       'Request timed out'
     end
   end
-
 
   class API
     # noinspection RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection

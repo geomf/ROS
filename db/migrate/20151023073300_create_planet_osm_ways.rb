@@ -6,7 +6,7 @@ class CreatePlanetOsmWays < ActiveRecord::Migration
       t.hstore :tags
 
       t.bigint :nodes, array: true
-      t.line_string :way, srid:900913
+      t.line_string :way, srid: 900913
       t.belongs_to :feeder
     end
   end

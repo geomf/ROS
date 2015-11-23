@@ -13,7 +13,6 @@ class BoundingBox
     @max_lat = max_lat.to_f unless max_lat.nil?
   end
 
-
   def self.from_bbox_params(params)
     if params[:bbox] && params[:bbox].count(',') == 3
       bbox_array = params[:bbox].split(',')
@@ -24,7 +23,6 @@ class BoundingBox
   def get_polygon
     "'POLYGON((#{max_lon} #{min_lat}, #{max_lon} #{max_lat}, #{min_lon} #{max_lat}, #{min_lon} #{min_lat}, #{max_lon} #{min_lat}))'"
   end
-
 
 =begin
   def check_boundaries
@@ -79,8 +77,6 @@ class BoundingBox
   def to_s
     "#{min_lon},#{min_lat},#{max_lon},#{max_lat}"
   end
-
-  private
 
   def self.from_bbox_array(bbox_array)
 =begin

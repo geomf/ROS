@@ -8,6 +8,6 @@ module WayHelper
       points << factory.point(node.lon / 100.0, node.lat / 100.0)
     end
 
-    return factory.line_string(points)
+    factory.line_string(points)
   end
 end

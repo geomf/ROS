@@ -27,10 +27,10 @@ class PlanetOsmRel < ActiveRecord::Base
     to_add_or_change = @new_members
     to_delete = subtract(old_members, @new_members)
 
-    modify_rel = Proc.new {|element, member_role, member_id| element.tags[member_role] = member_id}
+    modify_rel = proc { |element, member_role, member_id| element.tags[member_role] = member_id }
     update(to_add_or_change, modify_rel)
 
-    delete_rel = Proc.new {|element, member_role, _| element.tags.delete(member_role)}
+    delete_rel = proc { |element, member_role, _| element.tags.delete(member_role) }
     update(to_delete, delete_rel)
   end
 
@@ -54,7 +54,6 @@ class PlanetOsmRel < ActiveRecord::Base
     # rel = joins(:relation).find_by("member_type = 'Relation' AND member_id = ? ", id)
     # fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
   end
-
 
   def validate_element(_)
     # fail OSM::APIPreconditionFailedError.new("Cannot update relation #{id}: data or member data is invalid.")

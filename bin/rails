@@ -6,7 +6,6 @@ end
 APP_PATH = File.expand_path('../../config/application', __FILE__)
 require_relative '../config/boot'
 
-
 =begin  SSL
 cert_name = [
     %w[CN localhost],

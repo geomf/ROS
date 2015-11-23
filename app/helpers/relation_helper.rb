@@ -6,7 +6,7 @@ module RelationHelper
   def gather_super_relations
     relations_ids = {}
     GeoHelper::SUPER_RELATION_TAGS.each do |rel_role|
-      relations_ids[rel_role] = PlanetOsmRel.where('tags @> hstore(:key, :value)', key: rel_role, value:id.to_s).pluck(:id)
+      relations_ids[rel_role] = PlanetOsmRel.where('tags @> hstore(:key, :value)', key: rel_role, value: id.to_s).pluck(:id)
     end
     relations_ids
   end
@@ -34,7 +34,7 @@ module RelationHelper
   def subtract(old_members, new_members)
     members = old_members.clone
     old_members.each do |rel_role, _|
-      members[rel_role] -= new_members[rel_role] if new_members.has_key?(rel_role)
+      members[rel_role] -= new_members[rel_role] if new_members.key?(rel_role)
     end
     members
   end

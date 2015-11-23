@@ -30,7 +30,7 @@ module GeoRecord
     # TODO: NotYetImplemented   pop_tag('feeder_id')
     self.feeder_id = 1
 
-    # TODO should be done on client side - in ID
+    # TODO: should be done on client side - in ID
     CLIENT_SIDE_TAGS.each do |tag|
       pop_tag(tag)
     end
@@ -39,7 +39,7 @@ module GeoRecord
 
     save
 
-    after_save if defined?(after_save)   # TODO: do it better
+    after_save if defined?(after_save) # TODO: do it better
   end
 
   def delete_from
