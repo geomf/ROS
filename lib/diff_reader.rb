@@ -1,3 +1,5 @@
+# Portions Copyright (C) 2015 Intel Corporation
+
 ##
 # DiffReader reads OSM diffs and applies them to the database.
 class DiffReader

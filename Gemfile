@@ -1,3 +1,5 @@
+# Portions Copyright (C) 2015 Intel Corporation
+
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

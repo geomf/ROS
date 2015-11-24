@@ -1,3 +1,5 @@
+# Portions Copyright (C) 2015 Intel Corporation
+
 #!/usr/bin/env ruby
 require 'pathname'
 

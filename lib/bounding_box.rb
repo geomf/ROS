@@ -1,3 +1,5 @@
+# Portions Copyright (C) 2015 Intel Corporation
+
 class BoundingBox
   attr_reader :min_lon, :min_lat, :max_lon, :max_lat
 

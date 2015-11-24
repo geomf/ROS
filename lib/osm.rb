@@ -1,4 +1,5 @@
-# The OSM module provides support functions for OSM.
+# Portions Copyright (C) 2015 Intel Corporation
+
 module OSM
   require 'xml/libxml'
 

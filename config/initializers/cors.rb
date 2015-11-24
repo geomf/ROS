@@ -1,3 +1,5 @@
+# Portions Copyright (C) 2015 Intel Corporation
+
 require 'rack/cors'
 
 # Mark CORS responses as uncacheable as we don't want a browser to
