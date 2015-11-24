@@ -9,10 +9,6 @@ Bundler.require(*Rails.groups)
 
 module ROS
   class Application < Rails::Application
-=begin SSL
-    config.force_ssl = true
-=end
-
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib)
 

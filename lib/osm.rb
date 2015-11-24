@@ -211,14 +211,14 @@ module OSM
 
   class API
     # noinspection RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection
-    def get_xml_doc
+    def create_xml_doc
       doc = XML::Document.new
       doc.encoding = XML::Encoding::UTF_8
       root = XML::Node.new 'osm'
-#      root['version'] = API_VERSION.to_s
-#      root['generator'] = GENERATOR
-#      root['copyright'] = COPYRIGHT_OWNER
-#      root['license'] = LICENSE_URL
+      # root['version'] = API_VERSION.to_s
+      # root['generator'] = GENERATOR
+      # root['copyright'] = COPYRIGHT_OWNER
+      # root['license'] = LICENSE_URL
 
       doc.root = root
       doc

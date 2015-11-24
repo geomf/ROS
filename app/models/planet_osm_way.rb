@@ -2,7 +2,7 @@ class PlanetOsmWay < ActiveRecord::Base
   include GeoRecord
   include WayHelper
 
-  def osm_name; 'way' end
+  OSM_NAME = 'way'
 
   def add_additional_nodes(el)
     self.nodes.each do |nd_id|
@@ -34,9 +34,7 @@ class PlanetOsmWay < ActiveRecord::Base
     return false if nodes.empty?
 
     # TODO: Verify if only 2 should be available
-    if nodes.length < 2
-      fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2)
-    end
+    fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2) if nodes.length < 2
 
     # TODO: check if nodes_id are already in db
     # finded_nodes = PlanetOsmNode.find(nodes)
@@ -46,6 +44,5 @@ class PlanetOsmWay < ActiveRecord::Base
     #  missing = new_nds - db_nds.collect(&:id)
     #  fail OSM::APIPreconditionFailedError.new("Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist.")
     # end
-
   end
 end

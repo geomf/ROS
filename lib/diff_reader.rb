@@ -2,9 +2,9 @@
 # DiffReader reads OSM diffs and applies them to the database.
 class DiffReader
   MODELS = {
-      'node' => PlanetOsmNode,
-      'way' => PlanetOsmWay,
-      'relation' => PlanetOsmRel
+    'node' => PlanetOsmNode,
+    'way' => PlanetOsmWay,
+    'relation' => PlanetOsmRel
   }
 
   ##
@@ -78,8 +78,7 @@ class DiffReader
   def with_model
     with_element do |model_name, _model_attributes|
       model = MODELS[model_name]
-      fail OSM::APIBadUserInput.new("Unexpected element type #{model_name}, " +
-                                        'expected node, way or relation.') if model.nil?
+      fail OSM::APIBadUserInput.new("Unexpected element type #{model_name}, expected node, way or relation.") if model.nil?
       # new in libxml-ruby >= 2, expand returns an element not associated
       # with a document. this means that there's no encoding parameter,
       # which means basically nothing works.
@@ -98,13 +97,6 @@ class DiffReader
     end
   end
 
-  ##
-  # Consume the XML diff and try to commit it to the database. This code
-  # is *not* transactional, so code which calls it should ensure that the
-  # appropriate transaction block is in place.
-  #
-  # On a failure to meet preconditions (e.g: optimistic locking fails)
-  # an exception subclassing OSM::APIError will be thrown.
   def commit
     # data structure used for mapping placeholder IDs to real IDs
     $ids = { node: {}, way: {}, relation: {} }
@@ -115,36 +107,48 @@ class DiffReader
 
     # loop at the top level, within the <osmChange> element
     with_element do |action_name, _|
-      if action_name == 'create'
-        with_model do |model, model_name, xml|
-          element = model.new
-          element.fill_using_xml!(xml)
-
-          store_placeholder(xml['id'].to_i, element.id, model, model_name, xml)
-        end
-      elsif action_name == 'modify'
-        with_model do |model, model_name, xml|
-          fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
-          id = xml['id'].to_i
-          # .to_i will return 0 if there is no number that can be parsed.
-          # We want to make sure that there is no id with zero anyway
-          # fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if id == 0
-
-          element = model.find(id)
-          element.fill_using_xml!(xml)
-        end
-
-      elsif action_name == 'delete'
-        with_model do |model, _, xml|
-          id = xml['id'].to_i
-
-          element = model.find(id)
-          element.delete_from
-        end
+      case action_name
+      when 'create'
+        create_element
+      when 'modify'
+        modify_element
+      when 'delete'
+        delete_element
       else
         # no other actions to choose from, so it must be the users fault!
         fail OSM::APIChangesetActionInvalid.new(action_name)
       end
+    end
+  end
+
+  def create_element
+    with_model do |model, model_name, xml|
+      element = model.new
+      element.fill_using_xml!(xml)
+
+      store_placeholder(xml['id'].to_i, element.id, model, model_name, xml)
+    end
+  end
+
+  def modify_element
+    with_model do |model, model_name, xml|
+      fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
+      id = xml['id'].to_i
+      # .to_i will return 0 if there is no number that can be parsed.
+      # We want to make sure that there is no id with zero anyway
+      # fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if id == 0
+
+      element = model.find(id)
+      element.fill_using_xml!(xml)
+    end
+  end
+
+  def delete_element
+    with_model do |model, _, xml|
+      id = xml['id'].to_i
+
+      element = model.find(id)
+      element.delete_from
     end
   end
 

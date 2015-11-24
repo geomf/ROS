@@ -2,9 +2,33 @@
 Metrics/LineLength:
   Max: 200
 
+Metrics/MethodLength:
+  Max: 20
+
 Style/NumericLiterals:
   MinDigits: 15
 
+Metrics/AbcSize:
+  Max: 20
+
+Style/Documentation:
+  Enabled: false
+
+Style/RedundantSelf:
+  Enabled: false
+
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
 AllCops:
   Exclude:
-    - db/schema.rb
+    - 'db/schema.rb'
+
+Lint/HandleExceptions:
+  Exclude:
+    - 'bin/rails'
+    - 'bin/rake'
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'test/test_helper.rb'

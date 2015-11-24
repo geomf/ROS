@@ -6,7 +6,7 @@ module GeoRecord
 
   # from map request for vector tiles
   def to_xml_node
-    el = XML::Node.new self.osm_name
+    el = XML::Node.new self.class::OSM_NAME
     el['id'] = id.to_s
 
     add_additional_nodes(el)

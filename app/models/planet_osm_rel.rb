@@ -1,7 +1,8 @@
 class PlanetOsmRel < ActiveRecord::Base
   include GeoRecord
   include RelationHelper
-  def osm_name; 'relation' end
+
+  OSM_NAME = 'relation'
 
   def add_additional_nodes(el)
     relations = (self.power.end_with?('_configuration')) ? gather_normal_relations : gather_super_relations

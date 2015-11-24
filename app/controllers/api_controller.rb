@@ -15,46 +15,60 @@ class ApiController < ApplicationController
     # TODO: Check Bounding BOx size
     # TODO: Check amount of nodes - not here
 
-    bbox = BoundingBox.from_bbox_params(params)
+    @bbox = BoundingBox.from_bbox_params(params)
 
-    doc = OSM::API.new.get_xml_doc
+    doc = OSM::API.new.create_xml_doc
 
-    relations_id = []
+    @relations_id = []
+    @nodes_id = []
 
-    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{bbox.get_polygon}, 4326), 900913))")
-    # TODO: verify if & is needed
-    nodes_id = PlanetOsmNode.where("ST_Intersects(geo_point, ST_Transform(ST_GeomFromText(#{bbox.get_polygon}, 4326), 900913))").map(&:id)
-
-    ways.each do |way|
-      nodes_id += way.nodes
-      append_to_relation(relations_id, way, 'configuration')
-
-      doc.root << way.to_xml_node
-    end
-
-    points = PlanetOsmNode.find(nodes_id.uniq)
-    points.each do |point|
-      doc.root << point.to_xml_node
-    end
-
-    super_relations_id = []
-
-    relations = PlanetOsmRel.find(relations_id.uniq)
-    relations.each do |relation|
-      SUPER_CONFIG_TAGS.each do |tag_name|
-        append_to_relation(super_relations_id, relation, tag_name)
-      end
-      doc.root << relation.to_xml_node
-    end
-
-    super_relations = PlanetOsmRel.find(super_relations_id.uniq)
-    super_relations.each do |super_relation|
-      doc.root << super_relation.to_xml_node
-    end
+    add_ways_to_xml(doc)
+    add_points_to_xml(doc)
+    add_relations_to_xml(doc)
+    add_super_relations_to_xml(doc)
 
     response.headers['Content-Disposition'] = "attachment; filename=\"map.osm\""
 
     render text: doc.to_s, content_type: 'text/xml'
+  end
+
+  def add_ways_to_xml(doc)
+    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))")
+    ways.each do |way|
+      @nodes_id += way.nodes
+      append_to_relation(@relations_id, way, 'configuration')
+
+      doc.root << way.to_xml_node
+    end
+  end
+
+  def add_points_to_xml(doc)
+    # TODO: verify if & is needed
+    @nodes_id += PlanetOsmNode.where("ST_Intersects(geo_point, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))").map(&:id)
+
+    points = PlanetOsmNode.find(@nodes_id.uniq)
+    points.each do |point|
+      doc.root << point.to_xml_node
+    end
+  end
+
+  def add_relations_to_xml(doc)
+    @super_relations_id = []
+
+    relations = PlanetOsmRel.find(@relations_id.uniq)
+    relations.each do |relation|
+      SUPER_CONFIG_TAGS.each do |tag_name|
+        append_to_relation(@super_relations_id, relation, tag_name)
+      end
+      doc.root << relation.to_xml_node
+    end
+  end
+
+  def add_super_relations_to_xml(doc)
+    super_relations = PlanetOsmRel.find(@super_relations_id.uniq)
+    super_relations.each do |super_relation|
+      doc.root << super_relation.to_xml_node
+    end
   end
 
   def append_to_relation(array, element, tag_name)
@@ -63,7 +77,7 @@ class ApiController < ApplicationController
 
   # do we need this method? maybe use it to send API version
   def capabilities
-    doc = OSM::API.new.get_xml_doc
+    doc = OSM::API.new.create_xml_doc
 
     render text: doc.to_s, content_type: 'text/xml'
   end
@@ -72,23 +86,23 @@ class ApiController < ApplicationController
     type_name = params['type_name']
     model = params['model']
 
-    unless params[type_name]
-      fail OSM::APIBadUserInput.new("The parameter #{type_name} is required, and must be of the form #{type_name}=id[,id[,id...]]")
-    end
+    fail OSM::APIBadUserInput.new("The parameter #{type_name} is required, and must be of the form #{type_name}=id[,id[,id...]]") unless params[type_name]
 
     ids = params[type_name].split(',').collect(&:to_i)
 
-    if ids.length == 0
-      fail OSM::APIBadUserInput.new("No #{type_name} were given to search for")
-    end
+    response = prepare_response(ids, model)
 
-    doc = OSM::API.new.get_xml_doc
+    render text: response, content_type: 'text/xml'
+  end
+
+  def prepare_response(ids, model)
+    doc = OSM::API.new.create_xml_doc
 
     model.find(ids).each do |element|
       doc.root << element.to_xml_node
     end
 
-    render text: doc.to_s, content_type: 'text/xml'
+    doc.to_s
   end
 
   def upload

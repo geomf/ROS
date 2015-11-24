@@ -1,7 +1,8 @@
 class PlanetOsmNode < ActiveRecord::Base
   include GeoRecord
   include NodeHelper
-  def osm_name; 'node' end
+
+  OSM_NAME = 'node'
 
   def add_additional_nodes(el)
     el['lat'] = convert_lat_from_mercator(self.lat).to_s
