@@ -32,7 +32,7 @@ class PlanetOsmWay < ActiveRecord::Base
     self.nodes = []
 
     pt.find('nd').each do |nd|
-      proper_id = get_fixed_placeholder_id(nd['ref'].to_i, :node)
+      proper_id = Placeholder.get_fixed_id(nd['ref'].to_i, :node)
       self.nodes << proper_id
     end
 
@@ -58,5 +58,13 @@ class PlanetOsmWay < ActiveRecord::Base
     #  missing = new_nds - db_nds.collect(&:id)
     #  fail OSM::APIPreconditionFailedError.new("Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist.")
     # end
+  end
+
+  def rerender
+    # TODO: rerender whole edge not only Start and End point
+    self.nodes.each do |node_id|
+      node = PlanetOsmNode.find(node_id)
+      Renderer.add_point(node.lat, node.lon)
+    end
   end
 end

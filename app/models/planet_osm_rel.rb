@@ -31,7 +31,7 @@ class PlanetOsmRel < ActiveRecord::Base
     pt.find('member').each do |member|
       @new_members[member['role']] ||= []
 
-      proper_id = get_fixed_placeholder_id(member['ref'].to_i, member['type'])
+      proper_id = Placeholder.get_fixed_id(member['ref'].to_i, member['type'])
       @new_members[member['role']].append(proper_id)
     end
   end
@@ -68,6 +68,7 @@ class PlanetOsmRel < ActiveRecord::Base
     # TODO: find all members and delete referation to this element.
     # rel = joins(:relation).find_by("member_type = 'Relation' AND member_id = ? ", id)
     # fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
+    true
   end
 
   def validate_element(_)

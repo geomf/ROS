@@ -53,18 +53,4 @@ module GeoHelper
     fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing value') if tag['v'].nil?
     fail OSM::APIDuplicateTagsError.new('geoElement', id, tag['k']) if tags.include? tag['k']
   end
-
-  ##
-  # if any referenced nodes are placeholder IDs (i.e: are negative) then
-  # this calling this method will fix them using the map from placeholders
-  # to IDs +id_map+.
-  def get_fixed_placeholder_id(old_id, type)
-    if old_id < 0
-      new_id = $ids[type][old_id]
-      # fail OSM::APIBadUserInput.new("Placeholder #{type} not found for reference #{old_id} in #{self.class} #{self.id.nil? ? placeholder_id : self.id}") if new_id.nil?
-      new_id
-    else
-      old_id
-    end
-  end
 end

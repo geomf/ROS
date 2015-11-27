@@ -18,6 +18,35 @@ module GeoRecord
 
   CLIENT_SIDE_TAGS = %w(oneway type route)
 
+  class << self
+    def create(placeholder_id, model, xml)
+      element = model.new
+      element.fill!(xml)
+
+      Placeholder.store(placeholder_id, element.id, model, xml)
+
+      Renderer.rerender(element)
+    end
+
+    def modify(id, model, xml)
+      element = model.find(id)
+
+      Renderer.rerender(element) # remove_old_tile
+
+      element.fill!(xml)
+
+      Renderer.rerender(element)
+    end
+
+    def delete(id, model, _)
+      element = model.find(id)
+
+      element.delete if element.check_if_can_be_deleted?
+
+      Renderer.rerender(element)
+    end
+  end
+
   # from map request for vector tiles
   def to_xml_node
     el = XML::Node.new self.class::OSM_NAME
@@ -34,7 +63,7 @@ module GeoRecord
     el
   end
 
-  def fill_using_xml!(pt)
+  def fill!(pt)
     validate_element(pt)
 
     self.tags = read_tags_from_xml(pt)
@@ -54,13 +83,5 @@ module GeoRecord
     save
 
     after_save if defined?(after_save) # TODO: do it better
-  end
-
-  def delete_from
-    self.class.transaction do
-      self.lock!
-
-      self.delete if check_if_can_be_deleted?
-    end
   end
 end

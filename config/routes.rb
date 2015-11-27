@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   get 'api/0.6/map' => 'api#map'
 
+  get 'api/0.6/rerender' => 'api#rerender'
+
   post 'api/0.6/changeset/upload' => 'api#upload'
 
   get 'api/0.6/nodes' => 'api#list', type_name: 'nodes', model: PlanetOsmNode

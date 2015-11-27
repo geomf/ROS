@@ -125,4 +125,15 @@ class ApiController < ApplicationController
 
     render text: ''
   end
+
+  def rerender
+    Renderer.init
+
+    feeder_id = params['feeder_id']
+
+    PlanetOsmNode.where(feeder_id: feeder_id).each(&:rerender)
+    PlanetOsmWay.where(feeder_id: feeder_id).each(&:rerender)
+
+    Renderer.send_dirty
+  end
 end

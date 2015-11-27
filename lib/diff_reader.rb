@@ -9,6 +9,8 @@ class DiffReader
     'relation' => PlanetOsmRel
   }
 
+  POSSIBLE_ACTIONS = %w(create modify delete)
+
   ##
   # Construct a diff reader by giving it a bunch of XML +data+ to parse
   # in OsmChange format. All diffs must be limited to a single changeset
@@ -45,12 +47,8 @@ class DiffReader
       # read the first element
       read_or_die
 
-      while @reader.node_type != 15 # end element
-        # because we read elements in DOM-style to reuse their DOM
-        # parsing code, we don't always read an element on each pass
-        # as the call to @reader.next in the innermost loop will take
-        # care of that for us.
-        if @reader.node_type == 1 # element
+      while @reader.node_type != LibXML::XML::Reader::TYPE_END_ELEMENT
+        if @reader.node_type == LibXML::XML::Reader::TYPE_ELEMENT
           name = @reader.name
           attributes = {}
 
@@ -90,7 +88,7 @@ class DiffReader
       new_node = @doc.import(expanded)
       @doc.root << new_node
 
-      yield model, model_name, new_node
+      yield model, new_node
       @reader.next
 
       # remove element from doc - it will be garbage collected and the
@@ -100,22 +98,28 @@ class DiffReader
   end
 
   def commit
-    # data structure used for mapping placeholder IDs to real IDs
-    $ids = { node: {}, way: {}, relation: {} }
+    Placeholder.init
 
     # take the first element and check that it is an osmChange element
     @reader.read
     fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != 'osmChange'
 
-    # loop at the top level, within the <osmChange> element
+    Renderer.init
+    read_all_changes
+    Renderer.send_dirty
+  end
+
+  # loop at the top level, within the <osmChange> element
+  def read_all_changes
     with_element do |action_name, _|
-      case action_name
-      when 'create'
-        create_element
-      when 'modify'
-        modify_element
-      when 'delete'
-        delete_element
+      if action_name.in?(POSSIBLE_ACTIONS)
+        method_hook = GeoRecord.method(action_name)
+
+        with_model do |model, xml|
+          id = read_and_validate_id(model, xml)
+
+          method_hook.call(id, model, xml)
+        end
       else
         # no other actions to choose from, so it must be the users fault!
         fail OSM::APIChangesetActionInvalid.new(action_name)
@@ -123,47 +127,13 @@ class DiffReader
     end
   end
 
-  def create_element
-    with_model do |model, model_name, xml|
-      element = model.new
-      element.fill_using_xml!(xml)
+  def read_and_validate_id(model, xml)
+    fail OSM::APIBadXMLError.new(model, xml, 'ID is always required.') if xml['id'].nil?
+    id = xml['id'].to_i
 
-      store_placeholder(xml['id'].to_i, element.id, model, model_name, xml)
-    end
-  end
+    # .to_i will return 0 if there is no number that can be parsed.
+    fail OSM::APIBadUserInput.new("Cannot parse ID which is #{id}.") if id == 0
 
-  def modify_element
-    with_model do |model, model_name, xml|
-      fail OSM::APIBadXMLError.new(model_name, xml, 'ID is required when updating.') if xml['id'].nil?
-      id = xml['id'].to_i
-      # .to_i will return 0 if there is no number that can be parsed.
-      # We want to make sure that there is no id with zero anyway
-      # fail OSM::APIBadUserInput.new("ID of #{model_name} cannot be zero when updating.") if id == 0
-
-      element = model.find(id)
-      element.fill_using_xml!(xml)
-    end
-  end
-
-  def delete_element
-    with_model do |model, _, xml|
-      id = xml['id'].to_i
-
-      element = model.find(id)
-      element.delete_from
-    end
-  end
-
-  def store_placeholder(placeholder_id, new_id, model, model_name, xml)
-    # when this element is saved it will get a new ID, so we save it
-    # to produce the mapping which is sent to other elements.
-    fail OSM::APIBadXMLError.new(model, xml) if placeholder_id.nil?
-
-    # check if the placeholder ID has been given before and throw
-    # an exception if it has - we can't create the same element twice.
-    fail OSM::APIBadUserInput.new('Placeholder IDs must be unique for created elements.') if $ids[model_name.to_sym].include? placeholder_id
-
-    # save placeholder => allocated ID map
-    $ids[model_name.to_sym][placeholder_id] = new_id
+    id
   end
 end
