@@ -14,6 +14,8 @@
 
 class Renderer
   class << self
+    undef_method :new
+
     def init
       @all_tiles = {}
     end

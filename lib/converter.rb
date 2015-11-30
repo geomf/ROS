@@ -13,37 +13,41 @@
 #
 
 class Converter
-  SM_A = 6378137.0
+  class << self
+    undef_method :new
 
-  def self.lon_to_mercator(old_lon)
-    lon_rad = to_rad(old_lon.to_f)
+    SM_A = 6378137.0
 
-    SM_A * lon_rad * 100
-  end
+    def lon_to_mercator(old_lon)
+      lon_rad = to_rad(old_lon.to_f)
 
-  def self.lat_to_mercator(old_lat)
-    lat_rad = to_rad(old_lat.to_f)
+      SM_A * lon_rad * 100
+    end
 
-    SM_A * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad)) * 100
-  end
+    def lat_to_mercator(old_lat)
+      lat_rad = to_rad(old_lat.to_f)
 
-  def self.lon_from_mercator(old_lon)
-    lon_rad = old_lon.to_f / 100 / SM_A
+      SM_A * Math.log((Math.sin(lat_rad) + 1) / Math.cos(lat_rad)) * 100
+    end
 
-    to_deg(lon_rad)
-  end
+    def lon_from_mercator(old_lon)
+      lon_rad = old_lon.to_f / 100 / SM_A
 
-  def self.lat_from_mercator(old_lat)
-    lat_rad = Math.atan(Math.exp(old_lat.to_f / 100 / SM_A))
+      to_deg(lon_rad)
+    end
 
-    to_deg(lat_rad) * 2 - 90
-  end
+    def lat_from_mercator(old_lat)
+      lat_rad = Math.atan(Math.exp(old_lat.to_f / 100 / SM_A))
 
-  def self.to_rad(deg)
-    deg / 180.0 * Math::PI
-  end
+      to_deg(lat_rad) * 2 - 90
+    end
 
-  def self.to_deg(rad)
-    rad * 180.0 / Math::PI
+    def to_rad(deg)
+      deg / 180.0 * Math::PI
+    end
+
+    def to_deg(rad)
+      rad * 180.0 / Math::PI
+    end
   end
 end

@@ -29,6 +29,14 @@ class PlanetOsmNode < ActiveRecord::Base
     self.geo_point = create_point_as_geo_element(self.lat, self.lon)
   end
 
+  def after_save
+    PlanetOsmWay.where("#{self.id} = ANY(nodes)").each do |way|
+      way.way = way.create_way_as_geo_element(way.nodes)
+      way.save
+      Renderer.rerender(way)
+    end
+  end
+
   def check_if_can_be_deleted?
     # TODO: Verify if node is used by any way
     # ways = Way.joins(:way_nodes).where(:current_way_nodes => { :node_id => id }).order(:id)

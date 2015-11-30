@@ -14,6 +14,8 @@
 
 class Placeholder
   class << self
+    undef_method :new
+
     # data structure used for mapping placeholder IDs to real IDs
     def init
       @ids = { node: {}, way: {}, relation: {} }
