@@ -15,7 +15,6 @@
 class ApiController < ApplicationController
   require 'xml/libxml'
 
-  SUPER_CONFIG_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C)
   #
   # First the
   # bounding box (bbox) is checked to make sure that it is sane. All nodes
@@ -26,67 +25,11 @@ class ApiController < ApplicationController
   # fetched. All the nodes and ways that are referenced by those ways are then
   # fetched. Finally all the xml is returned.
   def map
-    # TODO: Check Bounding BOx size
-    # TODO: Check amount of nodes - not here
-
-    @bbox = BoundingBox.from_bbox_params(params)
-
-    doc = OSM::API.new.create_xml_doc
-
-    @relations_id = []
-    @nodes_id = []
-
-    add_ways_to_xml(doc)
-    add_points_to_xml(doc)
-    add_relations_to_xml(doc)
-    add_super_relations_to_xml(doc)
+    tile = Tile.new(params)
 
     response.headers['Content-Disposition'] = "attachment; filename=\"map.osm\""
 
-    render text: doc.to_s, content_type: 'text/xml'
-  end
-
-  def add_ways_to_xml(doc)
-    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))")
-    ways.each do |way|
-      @nodes_id += way.nodes
-      append_to_relation(@relations_id, way, 'configuration')
-
-      doc.root << way.to_xml_node
-    end
-  end
-
-  def add_points_to_xml(doc)
-    # TODO: verify if & is needed
-    @nodes_id += PlanetOsmNode.where("ST_Intersects(geo_point, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))").map(&:id)
-
-    points = PlanetOsmNode.find(@nodes_id.uniq)
-    points.each do |point|
-      doc.root << point.to_xml_node
-    end
-  end
-
-  def add_relations_to_xml(doc)
-    @super_relations_id = []
-
-    relations = PlanetOsmRel.find(@relations_id.uniq)
-    relations.each do |relation|
-      SUPER_CONFIG_TAGS.each do |tag_name|
-        append_to_relation(@super_relations_id, relation, tag_name)
-      end
-      doc.root << relation.to_xml_node
-    end
-  end
-
-  def add_super_relations_to_xml(doc)
-    super_relations = PlanetOsmRel.find(@super_relations_id.uniq)
-    super_relations.each do |super_relation|
-      doc.root << super_relation.to_xml_node
-    end
-  end
-
-  def append_to_relation(array, element, tag_name)
-    array.append(element.tags[tag_name]) unless element.tags[tag_name].nil?
+    render text: tile.doc, content_type: 'text/xml'
   end
 
   # do we need this method? maybe use it to send API version
