@@ -12,9 +12,7 @@ gem 'activerecord-postgis-adapter'
 gem 'libxml-ruby', '>= 2.0.5', require: 'libxml'
 # Allow to fix cross-orign problem
 gem 'rack-cors'
-# change output to put every log on console and allow to work with cloud foundry logs.
-gem 'rails_12factor'
-gem 'cf-autoconfig', '~> 0.2.1'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -48,4 +46,10 @@ group :development do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+end
+
+group :production do
+  # change output to put every log on console and allow to work with cloud foundry logs.
+  gem 'rails_12factor'
+  gem 'cf-autoconfig', '~> 0.2.1'
 end
