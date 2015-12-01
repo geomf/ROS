@@ -13,12 +13,11 @@ default: &default
   pool: 5
   schema_search_path: "public,postgis"
 
-  username: chesser
-  password: Intel0mf
-
 development:
   <<: *default
   database: ROS_development
+  username: chesser
+  password: Intel0mf
   script_dir: /usr/share/postgresql/9.3/contrib/postgis-2.1
 
   #port: 5432
@@ -35,6 +34,4 @@ test:
 
 production:
   <<: *default
-  database: osm_rps_dev
-  host: osm-geo-db.cjsltrtsfo8x.eu-west-1.rds.amazonaws.com
   encoding: utf8
