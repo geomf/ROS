@@ -78,5 +78,6 @@ class ApiController < ApplicationController
     PlanetOsmWay.where(feeder_id: feeder_id).each(&:rerender)
 
     Renderer.send_dirty
+    render text: ''
   end
 end
