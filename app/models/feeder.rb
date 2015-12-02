@@ -13,4 +13,11 @@
 #
 
 class Feeder < ActiveRecord::Base
+  def to_xml_node
+    el = XML::Node.new 'feeder'
+    el['id'] = id.to_s
+    el['name'] = name
+
+    el
+  end
 end

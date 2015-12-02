@@ -80,4 +80,17 @@ class ApiController < ApplicationController
     Renderer.send_dirty
     render text: ''
   end
+
+  def feeders
+    user_id = params['user_id']
+    feeders = Feeder.where(user_id: user_id)
+
+    doc = OSM::API.new.create_xml_doc
+
+    feeders.each do |feeder|
+      doc.root << feeder.to_xml_node
+    end
+
+    render text: doc.to_s, content_type: 'text/xml'
+  end
 end

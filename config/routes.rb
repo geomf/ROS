@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get 'api/0.6/map' => 'api#map'
 
   get 'api/0.6/rerender' => 'api#rerender'
+  get 'api/0.6/feeders' => 'api#feeders'
 
   post 'api/0.6/changeset/upload' => 'api#upload'
 
