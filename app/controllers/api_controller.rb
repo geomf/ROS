@@ -64,9 +64,22 @@ class ApiController < ApplicationController
 
   def upload
     diff_reader = DiffReader.new(request.raw_post)
-    diff_reader.commit
+    feeders_changed = diff_reader.commit
 
-    render text: ''
+    render text: prepare_feeders_response(feeders_changed)
+  end
+
+  def prepare_feeders_response(feeders_changed)
+    doc = OSM::API.new.create_xml_doc
+
+    feeders_changed.each do |feeder_id, _|
+      el = XML::Node.new 'feeder'
+      el['id'] = feeder_id.to_s
+
+      doc.root << el
+    end
+
+    doc.to_s
   end
 
   def rerender

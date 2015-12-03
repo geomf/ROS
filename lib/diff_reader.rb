@@ -97,6 +97,11 @@ class DiffReader
     end
   end
 
+  @@changed_feeders = {}
+  def self.changed_feeders
+    @@changed_feeders
+  end
+
   def commit
     Placeholder.init
 
@@ -105,8 +110,11 @@ class DiffReader
     fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != 'osmChange'
 
     Renderer.init
+    @@changed_feeders = {}
     read_all_changes
     Renderer.send_dirty
+
+    @@changed_feeders
   end
 
   # loop at the top level, within the <osmChange> element
