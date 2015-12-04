@@ -18,9 +18,8 @@ class CreateFeeders < ActiveRecord::Migration
       t.text :name
       t.integer :lat
       t.integer :lon
-      t.text :config, array: true
-
       t.belongs_to :user
+      t.json :config
     end
   end
 end

@@ -25,7 +25,7 @@ class Renderer
     end
 
     def add_point(lat, lon)
-      (14..16).each do |zoom|
+      (11..16).each do |zoom|
         n = 2**zoom
         lon_deg = Converter.lon_from_mercator(lon)
         lat_deg = Converter.lat_from_mercator(lat)
