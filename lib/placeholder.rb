@@ -22,7 +22,7 @@ class Placeholder
     end
 
     def store(placeholder_id, new_id, model, xml)
-      model_name = model.class::OSM_NAME
+      model_name = model::OSM_NAME
 
       # when this element is saved it will get a new ID, so we save it
       # to produce the mapping which is sent to other elements.
