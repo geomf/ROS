@@ -96,7 +96,11 @@ class ApiController < ApplicationController
 
   def feeders
     user_id = params['user_id']
-    feeders = Feeder.where(user_id: user_id)
+    if user_id == 0
+      feeders = Feeder.all
+    else
+      feeders = Feeder.where(user_id: user_id)
+    end
 
     doc = OSM::API.new.create_xml_doc
 
