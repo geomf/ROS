@@ -51,11 +51,17 @@ class Renderer
       @all_tiles.each do |zoom, xy_tiles|
         xy_tiles.each do |x_tile, y_tiles|
           y_tiles.uniq.each do |y_tile|
-            uri = URI("http://52.30.29.154/osm_tiles2/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
+            uri = URI("http://mod-tile-foreground.hutchpcn15.infra-host.com/osm_tiles2/0/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 
             logger.info("Send GET request to: #{uri}")
             response = Net::HTTP.get(uri)
             logger.info("Get response: #{response}")
+
+            # TODO: move this request to seperate method
+            # TODO: do it per feeder_owner
+            feeder_owner = 1
+            uri = URI("http://mod-tile-foreground.hutchpcn15.infra-host.com/osm_tiles2/#{feeder_owner}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
+            Net::HTTP.get(uri)
           end
         end
       end

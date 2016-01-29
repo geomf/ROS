@@ -20,5 +20,4 @@ applications:
   path: .
   command: bundle exec rails s -p $PORT -b 0.0.0.0 -e production
   services:
-    - ros-service
-#    - rails-postgres
+    - geomf-service
