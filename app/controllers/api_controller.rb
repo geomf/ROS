@@ -96,7 +96,7 @@ class ApiController < ApplicationController
 
   def feeders
     user_id = params['user_id']
-    if user_id == 0
+    if user_id.to_i == 0
       feeders = Feeder.all
     else
       feeders = Feeder.where(user_id: user_id)
