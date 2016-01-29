@@ -48,20 +48,22 @@ class Renderer
       logger = Logger.new(STDOUT)
       logger.level = Logger::INFO
 
+      admin = 0
+      # TODO: find real feeder_owner
+      feeder_owner = 1
+      users = [admin,feeder_owner]
+
       @all_tiles.each do |zoom, xy_tiles|
         xy_tiles.each do |x_tile, y_tiles|
           y_tiles.uniq.each do |y_tile|
-            uri = URI("http://mod-tile-foreground.hutchpcn15.infra-host.com/osm_tiles2/0/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
+            users.uniq.each do |user_id|
+              foreground_host = JSON.parse(ENV["VCAP_SERVICES"])["user-provided"][0]["credentials"]["mod-tile-fg-host"]
+              uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 
-            logger.info("Send GET request to: #{uri}")
-            response = Net::HTTP.get(uri)
-            logger.info("Get response: #{response}")
-
-            # TODO: move this request to seperate method
-            # TODO: do it per feeder_owner
-            feeder_owner = 1
-            uri = URI("http://mod-tile-foreground.hutchpcn15.infra-host.com/osm_tiles2/#{feeder_owner}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
-            Net::HTTP.get(uri)
+              logger.info("Send GET request to: #{uri}")
+              response = Net::HTTP.get(uri)
+              logger.info("Get response: #{response}")
+            end
           end
         end
       end
