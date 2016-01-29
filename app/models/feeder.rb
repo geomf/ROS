@@ -17,6 +17,8 @@ class Feeder < ActiveRecord::Base
     el = XML::Node.new 'feeder'
     el['id'] = id.to_s
     el['name'] = name
+    el['lat'] = Converter.lat_from_mercator(lat)
+    el['lon'] = Converter.lon_from_mercator(lon)
 
     el
   end
