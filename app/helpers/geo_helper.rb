@@ -18,9 +18,9 @@ module GeoHelper
 
   def add_other_tags_to_xml_node(el)
     self.tags.each do |key, value|
-      add_tag_to_xml(el, 'power:' + key, value) unless RELATION_TAGS.include?(key) or value.nil?
+      add_tag_to_xml(el, 'power:' + key, value) unless RELATION_TAGS.include?(key) || value.nil?
     end
-  end#99386 - first part of rubocop issues
+  end
 
   def add_tag_to_xml(el, key, value)
     tag_el = XML::Node.new 'tag'

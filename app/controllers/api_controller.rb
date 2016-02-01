@@ -97,10 +97,10 @@ class ApiController < ApplicationController
   def feeders
     user_id = params['user_id']
     feeders = if is_admin?(user_id)
-      Feeder.all
-    else
-      Feeder.where(user_id: user_id)
-    end
+                Feeder.all
+              else
+                Feeder.where(user_id: user_id)
+              end
 
     doc = OSM::API.new.create_xml_doc
 
@@ -111,7 +111,7 @@ class ApiController < ApplicationController
     render text: doc.to_s, content_type: 'text/xml'
   end
 
-  def is_admin?(user_id)
+  def admin?(user_id)
     user_id.to_i == 0
   end
 end
