@@ -16,7 +16,7 @@ module RelationHelper
   def gather_all_relations
     normal_rels = gather_normal_relations
     super_rels = gather_super_relations
-    normal_rels.merge!(super_rels) { |_, v1, v2| v1 + v2}
+    normal_rels.merge!(super_rels) { |_, v1, v2| v1 + v2 }
 
     normal_rels
   end

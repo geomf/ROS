@@ -51,13 +51,13 @@ class Renderer
       admin = 0
       # TODO: find real feeder_owner
       feeder_owner = 1
-      users = [admin,feeder_owner]
+      users = [admin, feeder_owner]
 
       @all_tiles.each do |zoom, xy_tiles|
         xy_tiles.each do |x_tile, y_tiles|
           y_tiles.uniq.each do |y_tile|
             users.uniq.each do |user_id|
-              foreground_host = JSON.parse(ENV["VCAP_SERVICES"])["user-provided"][0]["credentials"]["mod-tile-fg-host"]
+              foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
               uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 
               logger.info("Send GET request to: #{uri}")

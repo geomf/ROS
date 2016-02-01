@@ -67,8 +67,8 @@ module GeoRecord
     validate_element(pt)
 
     self.tags = read_tags_from_xml(pt)
-    self.power = pop_tag('power','node')
-    self.name = pop_tag('name','test_name')
+    self.power = pop_tag('power', 'node')
+    self.name = pop_tag('name', 'test_name')
 
     self.feeder_id = pop_tag('feeder_id', 1)
     DiffReader.changed_feeders[self.feeder_id.to_i] = true
