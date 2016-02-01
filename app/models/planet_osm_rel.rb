@@ -16,10 +16,10 @@ class PlanetOsmRel < ActiveRecord::Base
   include GeoRecord
   include RelationHelper
 
-  OSM_NAME = 'relation'
+  OSM_NAME = 'relation'.freeze
 
   def add_additional_nodes(el)
-    relations = (self.power.end_with?('_configuration')) ? gather_normal_relations : gather_super_relations
+    relations = self.power.end_with?('_configuration') ? gather_normal_relations : gather_super_relations
     add_members_to_xml(el, relations)
 
     add_tag_to_xml(el, 'route', 'power')

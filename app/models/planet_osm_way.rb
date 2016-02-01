@@ -16,7 +16,7 @@ class PlanetOsmWay < ActiveRecord::Base
   include GeoRecord
   include WayHelper
 
-  OSM_NAME = 'way'
+  OSM_NAME = 'way'.freeze
 
   def add_additional_nodes(el)
     self.nodes.each do |nd_id|

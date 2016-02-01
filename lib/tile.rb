@@ -13,7 +13,7 @@
 #
 
 class Tile
-  SUPER_CONFIG_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C)
+  SUPER_CONFIG_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C).freeze
 
   def initialize(params)
     # TODO: Check Bounding Box size

@@ -16,7 +16,7 @@ module GeoRecord
   include GeoHelper
   require 'xml/libxml'
 
-  CLIENT_SIDE_TAGS = %w(oneway type route)
+  CLIENT_SIDE_TAGS = %w(oneway type route).freeze
 
   class << self
     def create(placeholder_id, model, xml)

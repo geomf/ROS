@@ -27,7 +27,7 @@ class ApiController < ApplicationController
   def map
     tile = Tile.new(params)
 
-    response.headers['Content-Disposition'] = "attachment; filename=\"map.osm\""
+    response.headers['Content-Disposition'] = 'attachment; filename="map.osm"'
 
     render text: tile.doc, content_type: 'text/xml'
   end
@@ -96,10 +96,10 @@ class ApiController < ApplicationController
 
   def feeders
     user_id = params['user_id']
-    if user_id.to_i == 0
-      feeders = Feeder.all
+    feeders = if is_admin?(user_id)
+      Feeder.all
     else
-      feeders = Feeder.where(user_id: user_id)
+      Feeder.where(user_id: user_id)
     end
 
     doc = OSM::API.new.create_xml_doc
@@ -109,5 +109,9 @@ class ApiController < ApplicationController
     end
 
     render text: doc.to_s, content_type: 'text/xml'
+  end
+
+  def is_admin?(user_id)
+    user_id.to_i == 0
   end
 end

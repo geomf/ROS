@@ -13,14 +13,14 @@
 #
 
 module GeoHelper
-  SUPER_RELATION_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C)
-  RELATION_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C)
+  SUPER_RELATION_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C).freeze
+  RELATION_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C).freeze
 
   def add_other_tags_to_xml_node(el)
     self.tags.each do |key, value|
-      add_tag_to_xml(el, 'power:' + key, value) unless RELATION_TAGS.include?(key) unless value.nil?
+      add_tag_to_xml(el, 'power:' + key, value) unless RELATION_TAGS.include?(key) or value.nil?
     end
-  end
+  end#99386 - first part of rubocop issues
 
   def add_tag_to_xml(el, key, value)
     tag_el = XML::Node.new 'tag'

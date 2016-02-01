@@ -7,9 +7,9 @@ class DiffReader
     'node' => PlanetOsmNode,
     'way' => PlanetOsmWay,
     'relation' => PlanetOsmRel
-  }
+  }.freeze
 
-  POSSIBLE_ACTIONS = %w(create modify delete)
+  POSSIBLE_ACTIONS = %w(create modify delete).freeze
 
   ##
   # Construct a diff reader by giving it a bunch of XML +data+ to parse
@@ -120,17 +120,13 @@ class DiffReader
   # loop at the top level, within the <osmChange> element
   def read_all_changes
     with_element do |action_name, _|
-      if action_name.in?(POSSIBLE_ACTIONS)
-        method_hook = GeoRecord.method(action_name)
+      # check weather action is possible, if not, it must be the users fault!
+      fail OSM::APIChangesetActionInvalid.new(action_name) unless action_name.in?(POSSIBLE_ACTIONS)
 
-        with_model do |model, xml|
-          id = read_and_validate_id(model, xml)
-
-          method_hook.call(id, model, xml)
-        end
-      else
-        # no other actions to choose from, so it must be the users fault!
-        fail OSM::APIChangesetActionInvalid.new(action_name)
+      method_hook = GeoRecord.method(action_name)
+      with_model do |model, xml|
+        id = read_and_validate_id(model, xml)
+        method_hook.call(id, model, xml)
       end
     end
   end
