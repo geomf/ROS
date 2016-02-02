@@ -25,7 +25,9 @@ class Renderer
     element.rerender if element.methods.include?(:rerender)
   end
 
-  def add_point(lat, lon)
+  def add_point(lat, lon, feeder_id)
+    user_id = Feeder.find(feeder_id)
+
     (11..16).each do |zoom|
       n = 2**zoom
       lon_deg = Converter.lon_from_mercator(lon)
@@ -35,30 +37,26 @@ class Renderer
       x_tile = n * ((lon_deg + 180) / 360.0)
       y_tile = n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
 
-      add_tile(x_tile, y_tile, zoom)
+      add_tile(x_tile, y_tile, zoom, user_id)
     end
   end
 
-  def add_tile(x_tile, y_tile, zoom)
+  def add_tile(x_tile, y_tile, zoom, user)
     @all_tiles[zoom] ||= {}
-    @all_tiles[zoom][x_tile.to_i] ||= []
-    @all_tiles[zoom][x_tile.to_i] << y_tile.to_i
+    @all_tiles[zoom][x_tile] ||= {}
+    @all_tiles[zoom][x_tile][y_tile] ||= [0] # add super_admin tile
+    @all_tiles[zoom][x_tile][y_tile] << user
   end
 
   def send_dirty
     logger = Logger.new(STDOUT)
     logger.level = Logger::INFO
 
-    admin = 0
-    # TODO: find real feeder_owner
-    feeder_owner = 1
-    users = [admin, feeder_owner]
-
     foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
 
     @all_tiles.each do |zoom, xy_tiles|
       xy_tiles.each do |x_tile, y_tiles|
-        y_tiles.uniq.each do |y_tile|
+        y_tiles.each do |y_tile, users|
           users.uniq.each do |user_id|
             uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 

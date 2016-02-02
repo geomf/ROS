@@ -51,6 +51,6 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def rerender
-    Renderer.current.add_point(self.lat, self.lon)
+    Renderer.current.add_point(self.lat, self.lon, self.feeder_id)
   end
 end

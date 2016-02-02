@@ -64,7 +64,7 @@ class PlanetOsmWay < ActiveRecord::Base
     # TODO: rerender whole edge not only Start and End point
     self.nodes.each do |node_id|
       node = PlanetOsmNode.find(node_id)
-      Renderer.current.add_point(node.lat, node.lon)
+      Renderer.current.add_point(node.lat, node.lon, node.feeder_id)
     end
   end
 end

@@ -89,8 +89,8 @@ class ApiController < ApplicationController
     feeder_id = params['feeder_id']
     RequestStore.store[:rerender] = Renderer.new
 
-    PlanetOsmNode.where(feeder_id: feeder_id).each(&:rerender)
-    PlanetOsmWay.where(feeder_id: feeder_id).each(&:rerender)
+    PlanetOsmNode.find_by_feeder_id(feeder_id).each(&:rerender)
+    PlanetOsmWay.find_by_feeder_id(feeder_id).each(&:rerender)
 
     Renderer.current.send_dirty
     render text: ''
@@ -101,7 +101,7 @@ class ApiController < ApplicationController
     feeders = if is_admin?(user_id)
                 Feeder.all
               else
-                Feeder.where(user_id: user_id)
+                Feeder.find_by_user_id(user_id)
               end
 
     doc = OSM::API.new.create_xml_doc
