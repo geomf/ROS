@@ -26,7 +26,7 @@ class PlanetOsmNode < ActiveRecord::Base
   def fill_other_fields_using_xml(pt)
     self.lon = Converter.lon_to_mercator(pt['lon'])
     self.lat = Converter.lat_to_mercator(pt['lat'])
-    self.geo_point = create_point_as_geo_element(self.lat, self.lon)
+    self.geo_point = create_point_as_geo_element(lat, lon)
   end
 
   def after_save
@@ -47,7 +47,7 @@ class PlanetOsmNode < ActiveRecord::Base
   def validate_element(pt)
     fail OSM::APIBadXMLError.new('node', pt, 'lat missing') if pt['lat'].nil?
     fail OSM::APIBadXMLError.new('node', pt, 'lon missing') if pt['lon'].nil?
-    fail OSM::APIBadUserInput.new('The node is outside this world') unless self.in_world?
+    fail OSM::APIBadUserInput.new('The node is outside this world') unless self.in_world?(pt['lat'], pt['lon'])
   end
 
   def rerender

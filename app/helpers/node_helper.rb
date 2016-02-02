@@ -19,9 +19,7 @@ module NodeHelper
     factory.point(lon / 100.0, lat / 100.0)
   end
 
-  def in_world?
-    # return false if lat < -90 || lat > 90
-    # return false if lon < -180 || lon > 180
-    true
+  def in_world?(lat, lon)
+    lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180
   end
 end
