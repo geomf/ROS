@@ -12,6 +12,8 @@ gem 'activerecord-postgis-adapter'
 gem 'libxml-ruby', '>= 2.0.5', require: 'libxml'
 # Allow to fix cross-orign problem
 gem 'rack-cors'
+# allow to store some parameters per request
+gem 'request_store'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'

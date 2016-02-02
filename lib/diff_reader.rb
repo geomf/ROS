@@ -3,6 +3,8 @@
 ##
 # DiffReader reads OSM diffs and applies them to the database.
 class DiffReader
+  attr_reader :@changed_feeders
+
   MODELS = {
     'node' => PlanetOsmNode,
     'way' => PlanetOsmWay,
@@ -10,6 +12,10 @@ class DiffReader
   }.freeze
 
   POSSIBLE_ACTIONS = %w(create modify delete).freeze
+
+  def self.current
+    RequestStore[:diff_reader]
+  end
 
   ##
   # Construct a diff reader by giving it a bunch of XML +data+ to parse
@@ -21,6 +27,8 @@ class DiffReader
     # diff processing stream.
     @doc = XML::Document.new
     @doc.root = XML::Node.new('osm')
+
+    @changed_feeders = {}
   end
 
   ##
@@ -50,15 +58,6 @@ class DiffReader
       while @reader.node_type != LibXML::XML::Reader::TYPE_END_ELEMENT
         if @reader.node_type == LibXML::XML::Reader::TYPE_ELEMENT
           name = @reader.name
-          attributes = {}
-
-          if @reader.has_attributes?
-            while @reader.move_to_next_attribute == 1
-              attributes[@reader.name] = @reader.value
-            end
-
-            @reader.move_to_element
-          end
 
           yield name, attributes
         else
@@ -67,6 +66,18 @@ class DiffReader
       end
     end
     read_or_die
+  end
+
+  def attributes
+    attributes = {}
+    if @reader.has_attributes?
+      while @reader.move_to_next_attribute == 1
+        attributes[@reader.name] = @reader.value
+      end
+
+      @reader.move_to_element
+    end
+    attributes
   end
 
   ##
@@ -97,24 +108,15 @@ class DiffReader
     end
   end
 
-  @@changed_feeders = {}
-  def self.changed_feeders
-    @@changed_feeders
-  end
-
   def commit
-    Placeholder.init
-
     # take the first element and check that it is an osmChange element
     @reader.read
     fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != 'osmChange'
 
-    Renderer.init
-    @@changed_feeders = {}
     read_all_changes
-    Renderer.send_dirty
+    Renderer.current.send_dirty
 
-    @@changed_feeders
+    @changed_feeders
   end
 
   # loop at the top level, within the <osmChange> element

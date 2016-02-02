@@ -23,19 +23,19 @@ module GeoRecord
       element = model.new
       element.fill!(xml)
 
-      Placeholder.store(placeholder_id, element.id, model, xml)
+      Placeholder.current.store(placeholder_id, element.id, model, xml)
 
-      Renderer.rerender(element)
+      Renderer.current.rerender(element)
     end
 
     def modify(id, model, xml)
       element = model.find(id)
 
-      Renderer.rerender(element) # remove_old_tile
+      Renderer.current.rerender(element) # remove_old_tile
 
       element.fill!(xml)
 
-      Renderer.rerender(element)
+      Renderer.current.rerender(element)
     end
 
     def delete(id, model, _)
@@ -43,7 +43,7 @@ module GeoRecord
 
       element.delete if element.check_if_can_be_deleted?
 
-      Renderer.rerender(element)
+      Renderer.current.rerender(element)
     end
   end
 
@@ -71,7 +71,7 @@ module GeoRecord
     self.name = pop_tag('name', 'test_name')
 
     self.feeder_id = pop_tag('feeder_id', 1)
-    DiffReader.changed_feeders[self.feeder_id.to_i] = true
+    DiffReader.current.changed_feeders[self.feeder_id.to_i] = true
 
     # TODO: should be done on client side - in ID
     CLIENT_SIDE_TAGS.each do |tag|

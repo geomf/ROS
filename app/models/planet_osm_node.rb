@@ -30,10 +30,10 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def after_save
-    PlanetOsmWay.where("#{self.id} = ANY(nodes)").each do |way|
+    PlanetOsmWay.where("#{self.id} = ANY(nodes)").find_each do |way|
       way.way = way.create_way_as_geo_element(way.nodes)
       way.save
-      Renderer.rerender(way)
+      Renderer.current.rerender(way)
     end
   end
 
@@ -51,6 +51,6 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def rerender
-    Renderer.add_point(self.lat, self.lon)
+    Renderer.current.add_point(self.lat, self.lon)
   end
 end

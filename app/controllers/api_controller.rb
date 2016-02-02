@@ -63,16 +63,19 @@ class ApiController < ApplicationController
   end
 
   def upload
-    diff_reader = DiffReader.new(request.raw_post)
-    feeders_changed = diff_reader.commit
+    RequestStore.store[:placeholder] = Placeholder.new
+    RequestStore.store[:rerender] = Renderer.new
+    RequestStore.store[:diff_reader] = DiffReader.new(request.raw_post)
 
-    render text: prepare_feeders_response(feeders_changed)
+    DiffReader.current.commit
+
+    render text: prepare_feeders_response
   end
 
-  def prepare_feeders_response(feeders_changed)
+  def prepare_feeders_response
     doc = OSM::API.new.create_xml_doc
 
-    feeders_changed.each do |feeder_id, _|
+    DiffReader.current.feeders_changed.each do |feeder_id, _|
       el = XML::Node.new 'feeder'
       el['id'] = feeder_id.to_s
 
@@ -83,14 +86,13 @@ class ApiController < ApplicationController
   end
 
   def rerender
-    Renderer.init
-
     feeder_id = params['feeder_id']
+    RequestStore.store[:rerender] = Renderer.new
 
     PlanetOsmNode.where(feeder_id: feeder_id).each(&:rerender)
     PlanetOsmWay.where(feeder_id: feeder_id).each(&:rerender)
 
-    Renderer.send_dirty
+    Renderer.current.send_dirty
     render text: ''
   end
 

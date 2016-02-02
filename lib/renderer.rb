@@ -13,57 +13,58 @@
 #
 
 class Renderer
-  class << self
-    undef_method :new
+  def self.current
+    RequestStore[:rerender]
+  end
 
-    def init
-      @all_tiles = {}
+  def initialize
+    @all_tiles = {}
+  end
+
+  def rerender(element)
+    element.rerender if element.methods.include?(:rerender)
+  end
+
+  def add_point(lat, lon)
+    (11..16).each do |zoom|
+      n = 2**zoom
+      lon_deg = Converter.lon_from_mercator(lon)
+      lat_deg = Converter.lat_from_mercator(lat)
+      lat_rad = Converter.to_rad(lat_deg)
+
+      x_tile = n * ((lon_deg + 180) / 360.0)
+      y_tile = n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
+
+      add_tile(x_tile, y_tile, zoom)
     end
+  end
 
-    def rerender(element)
-      element.rerender if element.methods.include?(:rerender)
-    end
+  def add_tile(x_tile, y_tile, zoom)
+    @all_tiles[zoom] ||= {}
+    @all_tiles[zoom][x_tile.to_i] ||= []
+    @all_tiles[zoom][x_tile.to_i] << y_tile.to_i
+  end
 
-    def add_point(lat, lon)
-      (11..16).each do |zoom|
-        n = 2**zoom
-        lon_deg = Converter.lon_from_mercator(lon)
-        lat_deg = Converter.lat_from_mercator(lat)
-        lat_rad = Converter.to_rad(lat_deg)
+  def send_dirty
+    logger = Logger.new(STDOUT)
+    logger.level = Logger::INFO
 
-        x_tile = n * ((lon_deg + 180) / 360.0)
-        y_tile = n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
+    admin = 0
+    # TODO: find real feeder_owner
+    feeder_owner = 1
+    users = [admin, feeder_owner]
 
-        add_tile(x_tile, y_tile, zoom)
-      end
-    end
+    foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
 
-    def add_tile(x_tile, y_tile, zoom)
-      @all_tiles[zoom] ||= {}
-      @all_tiles[zoom][x_tile.to_i] ||= []
-      @all_tiles[zoom][x_tile.to_i] << y_tile.to_i
-    end
+    @all_tiles.each do |zoom, xy_tiles|
+      xy_tiles.each do |x_tile, y_tiles|
+        y_tiles.uniq.each do |y_tile|
+          users.uniq.each do |user_id|
+            uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 
-    def send_dirty
-      logger = Logger.new(STDOUT)
-      logger.level = Logger::INFO
-
-      admin = 0
-      # TODO: find real feeder_owner
-      feeder_owner = 1
-      users = [admin, feeder_owner]
-
-      @all_tiles.each do |zoom, xy_tiles|
-        xy_tiles.each do |x_tile, y_tiles|
-          y_tiles.uniq.each do |y_tile|
-            users.uniq.each do |user_id|
-              foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
-              uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
-
-              logger.info("Send GET request to: #{uri}")
-              response = Net::HTTP.get(uri)
-              logger.info("Get response: #{response}")
-            end
+            logger.info("Send GET request to: #{uri}")
+            response = Net::HTTP.get(uri)
+            logger.info("Get response: #{response}")
           end
         end
       end

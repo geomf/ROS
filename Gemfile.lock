@@ -115,6 +115,7 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
       json (~> 1.4)
+    request_store (1.2.0)
     rgeo (0.4.0)
     rgeo-activerecord (4.0.0)
       activerecord (~> 4.2)
@@ -166,6 +167,7 @@ DEPENDENCIES
   rack-cors
   rails (= 4.2.4)
   rails_12factor
+  request_store
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring

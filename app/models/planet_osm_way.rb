@@ -32,7 +32,7 @@ class PlanetOsmWay < ActiveRecord::Base
     self.nodes = []
 
     pt.find('nd').each do |nd|
-      proper_id = Placeholder.get_fixed_id(nd['ref'].to_i, :node)
+      proper_id = Placeholder.current.get_fixed_id(nd['ref'].to_i, :node)
       self.nodes << proper_id
     end
 
@@ -64,7 +64,7 @@ class PlanetOsmWay < ActiveRecord::Base
     # TODO: rerender whole edge not only Start and End point
     self.nodes.each do |node_id|
       node = PlanetOsmNode.find(node_id)
-      Renderer.add_point(node.lat, node.lon)
+      Renderer.current.add_point(node.lat, node.lon)
     end
   end
 end
