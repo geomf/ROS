@@ -25,18 +25,13 @@ class CreateUsers < ActiveRecord::Migration
 
     reversible do |change|
       change.up do
-        execute <<-SQL
-          CREATE TYPE role AS ENUM ('admin', 'user', 'public');
-        SQL
-
+        execute 'CREATE TYPE role AS ENUM ("admin", "user", "public");'
         add_column :users, 'role', :role
       end
 
       change.down do
         remove_column :users, 'role'
-        execute <<-SQL
-          DROP TYPE role;
-        SQL
+        execute 'DROP TYPE role;'
       end
     end
   end
