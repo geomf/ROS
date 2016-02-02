@@ -29,13 +29,8 @@ class Renderer
     user_id = Feeder.find(feeder_id)
 
     (11..16).each do |zoom|
-      n = 2**zoom
-      lon_deg = Converter.lon_from_mercator(lon)
-      lat_deg = Converter.lat_from_mercator(lat)
-      lat_rad = Converter.to_rad(lat_deg)
-
-      x_tile = n * ((lon_deg + 180) / 360.0)
-      y_tile = n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
+      x_tile = Converter.tile_x_from_lon(lon, zoom)
+      y_tile = Converter.tile_y_from_lat(lat, zoom)
 
       add_tile(x_tile, y_tile, zoom, user_id)
     end
