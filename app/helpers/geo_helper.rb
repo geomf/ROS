@@ -32,7 +32,8 @@ module GeoHelper
   def read_tags_from_xml(pt)
     tags = {}
     pt.find('tag').each do |tag|
-      validate_tag(pt, tag, tags)
+      validate_tag(pt, tag)
+      validate_tag_duplication(tag, tags)
       tag['k'].slice!('power:')
       tags[tag['k']] = tag['v']
     end
@@ -48,9 +49,16 @@ module GeoHelper
     value
   end
 
-  def validate_tag(pt, tag, tags)
-    fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing key') if tag['k'].nil?
-    fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing value') if tag['v'].nil?
-    fail OSM::APIDuplicateTagsError.new('geoElement', id, tag['k']) if tags.include? tag['k']
+  def validate_tag(pt, tag)
+    fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing key') \
+      if tag['k'].nil?
+
+    fail OSM::APIBadXMLError.new(self.class, pt, 'tag is missing value') \
+      if tag['v'].nil?
+  end
+
+  def validate_tag_duplication(tag, tags)
+    fail OSM::APIDuplicateTagsError.new('geoElement', id, tag['k']) \
+      if tags.include? tag['k']
   end
 end

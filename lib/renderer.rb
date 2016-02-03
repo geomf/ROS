@@ -19,6 +19,11 @@ class Renderer
 
   def initialize
     @all_tiles = {}
+
+    @foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
+
+    @logger = Logger.new(STDOUT)
+    @logger.level = Logger::INFO
   end
 
   def rerender(element)
@@ -44,20 +49,15 @@ class Renderer
   end
 
   def send_dirty
-    logger = Logger.new(STDOUT)
-    logger.level = Logger::INFO
-
-    foreground_host = JSON.parse(ENV['VCAP_SERVICES'])['user-provided'][0]['credentials']['mod-tile-fg-host']
-
     @all_tiles.each do |zoom, xy_tiles|
       xy_tiles.each do |x_tile, y_tiles|
         y_tiles.each do |y_tile, users|
           users.uniq.each do |user_id|
-            uri = URI("#{foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
+            uri = URI("#{@foreground_host}/osm_tiles2/#{user_id}/#{zoom}/#{x_tile}/#{y_tile}.png/dirty")
 
-            logger.info("Send GET request to: #{uri}")
+            @logger.info("Send GET request to: #{uri}")
             response = Net::HTTP.get(uri)
-            logger.info("Get response: #{response}")
+            @logger.info("Get response: #{response}")
           end
         end
       end

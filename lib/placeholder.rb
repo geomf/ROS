@@ -47,9 +47,10 @@ class Placeholder
   def get_fixed_id(old_id, type)
     if old_id < 0
       new_id = @ids[type][old_id]
-      # fail OSM::APIBadUserInput,
-      #      "Placeholder #{type} not found for reference #{old_id} in #{self.class} #{self.id.nil? ? placeholder_id : self.id}" \
-      #   if new_id.nil?
+      fail OSM::APIBadUserInput,
+           "Placeholder #{type} not found for reference #{old_id}" \
+        if new_id.nil?
+
       new_id
     else
       old_id
