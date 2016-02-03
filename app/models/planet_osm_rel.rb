@@ -60,18 +60,21 @@ class PlanetOsmRel < ActiveRecord::Base
         element.save
       end
 
-      # fail OSM::APIBadXMLError.new('relation', member, "The #{member['type']} is not allowed only") unless TYPES.include? member['type']
+      # fail OSM::APIBadXMLError.new('relation', member, "The #{member['type']} is not allowed only") \
+      #   unless TYPES.include? member['type']
     end
   end
 
   def check_if_can_be_deleted?
     # TODO: find all members and delete referation to this element.
     # rel = joins(:relation).find_by("member_type = 'Relation' AND member_id = ? ", id)
-    # fail OSM::APIPreconditionFailedError.new("The relation #{new_relation.id} is used by other elements.") unless rel.nil?
+    # fail OSM::APIPreconditionFailedError,
+    #      "The relation #{new_relation.id} is used by other elements." unless rel.nil?
     true
   end
 
   def validate_element(_)
-    # fail OSM::APIPreconditionFailedError.new("Cannot update relation #{id}: data or member data is invalid.")
+    # fail OSM::APIPreconditionFailedError,
+    #      "Cannot update relation #{id}: data or member data is invalid."
   end
 end

@@ -35,7 +35,7 @@ class Tile
   end
 
   def add_ways_to_xml
-    ways = PlanetOsmWay.where("ST_Intersects(way, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))")
+    ways = PlanetOsmWay.where("ST_Intersects(way, #{@bbox.polygon_mercator})")
     ways.each do |way|
       @nodes_id += way.nodes
       append_to_relation(@relations_id, way, 'configuration')
@@ -46,7 +46,7 @@ class Tile
 
   def add_points_to_xml
     # TODO: verify if & is needed
-    @nodes_id += PlanetOsmNode.where("ST_Intersects(geo_point, ST_Transform(ST_GeomFromText(#{@bbox.polygon}, 4326), 900913))").map(&:id)
+    @nodes_id += PlanetOsmNode.where("ST_Intersects(geo_point, #{@bbox.polygon_mercator})").map(&:id)
 
     points = PlanetOsmNode.find(@nodes_id.uniq)
     points.each do |point|

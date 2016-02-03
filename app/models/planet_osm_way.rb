@@ -56,7 +56,8 @@ class PlanetOsmWay < ActiveRecord::Base
 
     # if found_nodes.length < nodes.length
     #  missing = new_nds - db_nds.collect(&:id)
-    #  fail OSM::APIPreconditionFailedError.new("Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist.")
+    #  fail OSM::APIPreconditionFailedError,
+    #    "Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist."
     # end
   end
 

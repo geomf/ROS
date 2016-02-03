@@ -211,7 +211,6 @@ module OSM
   end
 
   class API
-    # noinspection RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection,RubyQuotedStringsInspection
     def create_xml_doc
       doc = XML::Document.new
       doc.encoding = XML::Encoding::UTF_8

@@ -24,14 +24,16 @@ module RelationHelper
   def gather_super_relations
     relations_ids = {}
     GeoHelper::SUPER_RELATION_TAGS.each do |rel_role|
-      relations_ids[rel_role] = PlanetOsmRel.where('tags @> hstore(:key, :value)', key: rel_role, value: id.to_s).pluck(:id)
+      relations_ids[rel_role] = PlanetOsmRel.where('tags @> hstore(:key, :value)',
+                                                   key: rel_role, value: id.to_s).pluck(:id)
     end
     relations_ids
   end
 
   def gather_normal_relations
     relations_ids = {}
-    relations_ids['configuration'] = PlanetOsmWay.where('tags @> hstore(:key, :value)', key: 'configuration', value: id.to_s).pluck(:id)
+    relations_ids['configuration'] = PlanetOsmWay.where('tags @> hstore(:key, :value)',
+                                                        key: 'configuration', value: id.to_s).pluck(:id)
     relations_ids
   end
 
