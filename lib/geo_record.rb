@@ -54,9 +54,9 @@ module GeoRecord
 
     add_additional_nodes(el)
 
-    add_tag_to_xml(el, 'name', self.name)
-    add_tag_to_xml(el, 'power', self.power)
-    add_tag_to_xml(el, 'feeder_id', self.feeder_id.to_s)
+    add_tag_to_xml(el, 'name', name)
+    add_tag_to_xml(el, 'power', power)
+    add_tag_to_xml(el, 'feeder_id', feeder_id.to_s)
 
     add_other_tags_to_xml_node(el)
 
@@ -71,7 +71,7 @@ module GeoRecord
     self.name = pop_tag('name', 'test_name')
 
     self.feeder_id = pop_tag('feeder_id', 1)
-    DiffReader.current.changed_feeders[self.feeder_id.to_i] = true
+    DiffReader.current.changed_feeders[feeder_id.to_i] = true
 
     # TODO: should be done on client side - in ID
     CLIENT_SIDE_TAGS.each do |tag|

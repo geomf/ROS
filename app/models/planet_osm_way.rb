@@ -19,7 +19,7 @@ class PlanetOsmWay < ActiveRecord::Base
   OSM_NAME = 'way'.freeze
 
   def add_additional_nodes(el)
-    self.nodes.each do |nd_id|
+    nodes.each do |nd_id|
       node_el = XML::Node.new 'nd'
       node_el['ref'] = nd_id.to_s
       el << node_el
@@ -33,7 +33,7 @@ class PlanetOsmWay < ActiveRecord::Base
 
     pt.find('nd').each do |nd|
       proper_id = Placeholder.current.get_fixed_id(nd['ref'].to_i, :node)
-      self.nodes << proper_id
+      nodes << proper_id
     end
 
     self.way = create_way_as_geo_element(nodes)
@@ -62,7 +62,7 @@ class PlanetOsmWay < ActiveRecord::Base
 
   def rerender
     # TODO: rerender whole edge not only Start and End point
-    self.nodes.each do |node_id|
+    nodes.each do |node_id|
       node = PlanetOsmNode.find(node_id)
       Renderer.current.add_point(node.lat, node.lon, node.feeder_id)
     end

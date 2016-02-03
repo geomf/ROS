@@ -19,7 +19,7 @@ class PlanetOsmRel < ActiveRecord::Base
   OSM_NAME = 'relation'.freeze
 
   def add_additional_nodes(el)
-    relations = self.power.end_with?('_configuration') ? gather_normal_relations : gather_super_relations
+    relations = power.end_with?('_configuration') ? gather_normal_relations : gather_super_relations
     add_members_to_xml(el, relations)
 
     add_tag_to_xml(el, 'route', 'power')
@@ -56,7 +56,7 @@ class PlanetOsmRel < ActiveRecord::Base
       relations.each do |member_id|
         element = model.find(member_id)
 
-        action.call(element, rel_role, self.id)
+        action.call(element, rel_role, id)
         element.save
       end
 

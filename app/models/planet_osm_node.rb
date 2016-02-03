@@ -19,8 +19,8 @@ class PlanetOsmNode < ActiveRecord::Base
   OSM_NAME = 'node'.freeze
 
   def add_additional_nodes(el)
-    el['lat'] = Converter.lat_from_mercator(self.lat).to_s
-    el['lon'] = Converter.lon_from_mercator(self.lon).to_s
+    el['lat'] = Converter.lat_from_mercator(lat).to_s
+    el['lon'] = Converter.lon_from_mercator(lon).to_s
   end
 
   def fill_other_fields_using_xml(pt)
@@ -30,7 +30,7 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def after_save
-    PlanetOsmWay.where("#{self.id} = ANY(nodes)").find_each do |way|
+    PlanetOsmWay.where("#{id} = ANY(nodes)").find_each do |way|
       way.way = way.create_way_as_geo_element(way.nodes)
       way.save
       Renderer.current.rerender(way)
@@ -51,6 +51,6 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def rerender
-    Renderer.current.add_point(self.lat, self.lon, self.feeder_id)
+    Renderer.current.add_point(lat, lon, feeder_id)
   end
 end

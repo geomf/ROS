@@ -17,7 +17,7 @@ module GeoHelper
   RELATION_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C).freeze
 
   def add_other_tags_to_xml_node(el)
-    self.tags.each do |key, value|
+    tags.each do |key, value|
       add_tag_to_xml(el, 'power:' + key, value) unless RELATION_TAGS.include?(key) || value.nil?
     end
   end
@@ -43,8 +43,8 @@ module GeoHelper
     # TODO: check if tag exists
     # fail OSM::APIPreconditionFailedError.new("Cannot create #{model_name}: data is invalid.")
 
-    value = self.tags[name] || default
-    self.tags.delete(name)
+    value = tags[name] || default
+    tags.delete(name)
     value
   end
 

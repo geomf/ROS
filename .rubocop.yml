@@ -27,8 +27,6 @@ Metrics/AbcSize:
 Style/Documentation:
   Enabled: false
 
-Style/RedundantSelf:
-  Enabled: false
 
 Style/RaiseArgs:
   EnforcedStyle: compact
