@@ -43,7 +43,7 @@ class ApiController < ApplicationController
     type_name = params['type_name']
     model = params['model']
 
-    fail OSM::APIBadUserInput.new("The parameter #{type_name} is required, and must be of the form #{type_name}=id[,id[,id...]]") unless params[type_name]
+    fail OSM::APIBadUserInput, "The parameter #{type_name} is required, and must be of the form #{type_name}=id[,id[,id...]]" unless params[type_name]
 
     ids = params[type_name].split(',').collect(&:to_i)
 

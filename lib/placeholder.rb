@@ -31,7 +31,7 @@ class Placeholder
 
     # check if the placeholder ID has been given before and throw
     # an exception if it has - we can't create the same element twice.
-    fail OSM::APIBadUserInput.new('Placeholder IDs must be unique for created elements.') if @ids[model_name.to_sym].include? placeholder_id
+    fail OSM::APIBadUserInput, 'Placeholder IDs must be unique for created elements.' if @ids[model_name.to_sym].include? placeholder_id
 
     # save placeholder => allocated ID map
     @ids[model_name.to_sym][placeholder_id] = new_id
@@ -44,7 +44,7 @@ class Placeholder
   def get_fixed_id(old_id, type)
     if old_id < 0
       new_id = @ids[type][old_id]
-      # fail OSM::APIBadUserInput.new("Placeholder #{type} not found for reference #{old_id} in #{self.class} #{self.id.nil? ? placeholder_id : self.id}") if new_id.nil?
+      # fail OSM::APIBadUserInput, "Placeholder #{type} not found for reference #{old_id} in #{self.class} #{self.id.nil? ? placeholder_id : self.id}" if new_id.nil?
       new_id
     else
       old_id

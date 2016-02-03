@@ -89,7 +89,7 @@ class DiffReader
   def with_model
     with_element do |model_name, _model_attributes|
       model = MODELS[model_name]
-      fail OSM::APIBadUserInput.new("Unexpected element type #{model_name}, expected node, way or relation.") if model.nil?
+      fail OSM::APIBadUserInput, "Unexpected element type #{model_name}, expected node, way or relation." if model.nil?
       # new in libxml-ruby >= 2, expand returns an element not associated
       # with a document. this means that there's no encoding parameter,
       # which means basically nothing works.
@@ -111,7 +111,7 @@ class DiffReader
   def commit
     # take the first element and check that it is an osmChange element
     @reader.read
-    fail OSM::APIBadUserInput.new("Document element should be 'osmChange'.") if @reader.name != 'osmChange'
+    fail OSM::APIBadUserInput, "Document element should be 'osmChange'." if @reader.name != 'osmChange'
 
     read_all_changes
     Renderer.current.send_dirty
@@ -123,7 +123,7 @@ class DiffReader
   def read_all_changes
     with_element do |action_name, _|
       # check weather action is possible, if not, it must be the users fault!
-      fail OSM::APIChangesetActionInvalid.new(action_name) unless action_name.in?(POSSIBLE_ACTIONS)
+      fail OSM::APIChangesetActionInvalid, action_name unless action_name.in?(POSSIBLE_ACTIONS)
 
       method_hook = GeoRecord.method(action_name)
       with_model do |model, xml|
@@ -138,7 +138,7 @@ class DiffReader
     id = xml['id'].to_i
 
     # .to_i will return 0 if there is no number that can be parsed.
-    fail OSM::APIBadUserInput.new("Cannot parse ID which is #{id}.") if id == 0
+    fail OSM::APIBadUserInput "Cannot parse ID which is #{id}." if id == 0
 
     id
   end

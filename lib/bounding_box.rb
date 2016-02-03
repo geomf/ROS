@@ -11,7 +11,7 @@ class BoundingBox
     if params[:bbox] && params[:bbox].count(',') == 3
       bbox_array = params[:bbox].split(',')
     end
-    fail OSM::APIBadUserInput.new('The parameter bbox is required, and must be of the form min_lon,min_lat,max_lon,max_lat') unless bbox_array
+    fail OSM::APIBadUserInput, 'The parameter bbox is required, and must be of the form min_lon,min_lat,max_lon,max_lat' unless bbox_array
     BoundingBox.new(bbox_array[0], bbox_array[1], bbox_array[2], bbox_array[3])
   end
 
@@ -28,13 +28,13 @@ class BoundingBox
   def validate_float(value)
     Float(value)
   rescue
-    raise OSM::APIBadBoundingBox.new("All parameters of bounding box must be float type, but it wasn't")
+    raise OSM::APIBadBoundingBox, "All parameters of bounding box must be float type, but it wasn't"
   end
 
   def validate_boundaries
-    fail OSM::APIBadBoundingBox.new("The minimum longitude must be less than the maximum longitude, but it wasn't") if min_lon > max_lon
-    fail OSM::APIBadBoundingBox.new("The minimum latitude must be less than the maximum latitude, but it wasn't") if min_lat > max_lat
-    fail OSM::APIBadBoundingBox.new("The latitudes must be between #{-LAT_LIMIT} and #{LAT_LIMIT}, and longitudes between #{-LON_LIMIT} and #{LON_LIMIT}") if check_boundaries
+    fail OSM::APIBadBoundingBox, "The minimum longitude must be less than the maximum longitude, but it wasn't" if min_lon > max_lon
+    fail OSM::APIBadBoundingBox, "The minimum latitude must be less than the maximum latitude, but it wasn't" if min_lat > max_lat
+    fail OSM::APIBadBoundingBox, "The latitudes must be between #{-LAT_LIMIT} and #{LAT_LIMIT}, and longitudes between #{-LON_LIMIT} and #{LON_LIMIT}" if check_boundaries
   end
 
   def check_boundaries
@@ -43,8 +43,8 @@ class BoundingBox
 
   def validate_area
     area = (max_lon - min_lon) * (max_lat - min_lat)
-    fail OSM::APIBadBoundingBox.new("The maximum bbox size is #{MAX_REQUEST_AREA}, and your request was too large. Request a smaller area") if area > MAX_REQUEST_AREA
-    fail OSM::APIBadBoundingBox.new('The bbox size must be grater then 0') if area <= 0
+    fail OSM::APIBadBoundingBox, "The maximum bbox size is #{MAX_REQUEST_AREA}, and your request was too large. Request a smaller area" if area > MAX_REQUEST_AREA
+    fail OSM::APIBadBoundingBox, 'The bbox size must be grater then 0' if area <= 0
   end
 
   def polygon
