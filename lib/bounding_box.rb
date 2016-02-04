@@ -1,5 +1,8 @@
 # Portions Copyright (C) 2015 Intel Corporation
 
+##
+# Data structure used for parsing and storing tile bounding box
+# It is also responsible for parsing this info from params and validating it
 class BoundingBox
   attr_reader :min_lon, :min_lat, :max_lon, :max_lat
 
@@ -67,12 +70,12 @@ class BoundingBox
       if area <= 0
   end
 
-  def polygon
-    "'POLYGON((#{lower_right}, #{upper_right}, #{min_lon} #{max_lat}, #{lower_left}, #{lower_right}))'"
-  end
-
   def polygon_mercator
     "ST_Transform(ST_GeomFromText(#{polygon}, 4326), 900913)"
+  end
+
+  def polygon
+    "'POLYGON((#{lower_right}, #{upper_right}, #{min_lon} #{max_lat}, #{lower_left}, #{lower_right}))'"
   end
 
   def lower_right

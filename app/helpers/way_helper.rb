@@ -12,6 +12,9 @@
 # more details.
 #
 
+##
+# Helper module for PlanetOsmWay class
+# It stores low level functionality for creating geo-spatial data
 module WayHelper
   def create_way_as_geo_element(nodes)
     factory = RGeo::Cartesian.factory(srid: 900913)

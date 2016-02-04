@@ -12,6 +12,10 @@
 # more details.
 #
 
+##
+# Helper module for PlanetOsmRel class
+# It stores low level functionality for collecting all types of relation from db
+# and finding differences between two subsets of relations
 module RelationHelper
   def gather_all_relations
     normal_rels = gather_normal_relations

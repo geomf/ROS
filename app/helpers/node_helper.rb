@@ -12,6 +12,9 @@
 # more details.
 #
 
+##
+# Helper module for PlanetOsmNode class
+# It stores low level functionality for validation and creating geo-spatial data
 module NodeHelper
   def create_point_as_geo_element(lat, lon)
     factory = RGeo::Cartesian.factory(srid: 900913)

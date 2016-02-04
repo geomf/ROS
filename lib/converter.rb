@@ -12,6 +12,10 @@
 # more details.
 #
 
+##
+# Static class used for converting geo formats.
+# From LatLon to Google Mercator and vice versa
+# Additionally it also converts geo location to tile number.
 class Converter
   class << self
     undef_method :new
@@ -53,7 +57,7 @@ class Converter
     def tile_x_from_lon(lon, zoom)
       n = 2**zoom
 
-      lon_deg = Converter.lon_from_mercator(lon)
+      lon_deg = lon_from_mercator(lon)
 
       n * ((lon_deg + 180) / 360.0)
     end
@@ -61,8 +65,8 @@ class Converter
     def tile_y_from_lat(lat, zoom)
       n = 2**zoom
 
-      lat_deg = Converter.lat_from_mercator(lat)
-      lat_rad = Converter.to_rad(lat_deg)
+      lat_deg = lat_from_mercator(lat)
+      lat_rad = to_rad(lat_deg)
 
       n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
     end

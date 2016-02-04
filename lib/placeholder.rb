@@ -12,12 +12,14 @@
 # more details.
 #
 
+##
+# Data structure used for mapping placeholder IDs to real IDs
+# Each type of element (node, way, relation) has its own placeholder mapper
 class Placeholder
   def self.current
     RequestStore[:placeholder]
   end
 
-  # data structure used for mapping placeholder IDs to real IDs
   def initialize
     @ids = { node: {}, way: {}, relation: {} }
   end

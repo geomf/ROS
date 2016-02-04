@@ -12,6 +12,9 @@
 # more details.
 #
 
+##
+# Helper module for GeoRecord class
+# It stores low level functionality for parsing and writing to xml
 module GeoHelper
   SUPER_RELATION_TAGS = %w(spacing conductor_N conductor_A conductor_B conductor_C).freeze
   RELATION_TAGS = %w(configuration spacing conductor_N conductor_A conductor_B conductor_C).freeze
