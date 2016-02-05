@@ -38,7 +38,7 @@ class Renderer
   end
 
   def add_point(lat, lon, feeder_id)
-    user_id = Feeder.find(feeder_id)
+    user_id = Feeder.find(feeder_id).user_id
 
     (MIN_ZOOM..MAX_ZOOM).each do |zoom|
       x_tile = Converter.tile_x_from_lon(lon, zoom)

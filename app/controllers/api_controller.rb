@@ -84,7 +84,7 @@ class ApiController < ApplicationController
   def prepare_feeders_response
     doc = OSM::API.new.create_xml_doc
 
-    DiffReader.current.feeders_changed.each do |feeder_id, _|
+    DiffReader.current.changed_feeders.each do |feeder_id, _|
       el = XML::Node.new 'feeder'
       el['id'] = feeder_id.to_s
 
@@ -107,7 +107,7 @@ class ApiController < ApplicationController
 
   def feeders
     user_id = params['user_id']
-    feeders = if is_admin?(user_id)
+    feeders = if admin?(user_id)
                 Feeder.all
               else
                 Feeder.find_by_user_id(user_id)

@@ -52,7 +52,11 @@ class PlanetOsmNode < ActiveRecord::Base
   def validate_element(pt)
     fail OSM::APIBadXMLError.new('node', pt, 'lat missing') if pt['lat'].nil?
     fail OSM::APIBadXMLError.new('node', pt, 'lon missing') if pt['lon'].nil?
-    fail OSM::APIBadUserInput, 'The node is outside this world' unless self.in_world?(pt['lat'], pt['lon'])
+
+    lat = Validator.read_float(pt['lat'], 'node latitude')
+    lon = Validator.read_float(pt['lon'], 'node longitude')
+
+    fail OSM::APIBadUserInput, 'The node is outside this world' unless self.in_world?(lat, lon)
   end
 
   def rerender

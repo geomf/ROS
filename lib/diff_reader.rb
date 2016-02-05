@@ -3,7 +3,7 @@
 ##
 # DiffReader reads OSM diffs and applies them to the database.
 class DiffReader
-  attr_reader :@changed_feeders
+  attr_reader :changed_feeders
 
   MODELS = {
     'node' => PlanetOsmNode,
@@ -140,12 +140,6 @@ class DiffReader
     fail OSM::APIBadXMLError.new(model, xml, 'ID is always required.') \
       if xml['id'].nil?
 
-    read_int(xml['id'])
-  end
-
-  def read_int(value)
-    Integer(value)
-  rescue
-    raise OSM::APIBadBoundingBox, "Cannot parse ID which is #{id}"
+    Validator.read_int(xml['id'],'ID')
   end
 end

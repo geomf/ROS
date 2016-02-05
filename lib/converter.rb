@@ -59,7 +59,7 @@ class Converter
 
       lon_deg = lon_from_mercator(lon)
 
-      n * ((lon_deg + 180) / 360.0)
+      (n * ((lon_deg + 180) / 360.0)).to_i
     end
 
     def tile_y_from_lat(lat, zoom)
@@ -68,7 +68,7 @@ class Converter
       lat_deg = lat_from_mercator(lat)
       lat_rad = to_rad(lat_deg)
 
-      n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2
+      (n * (1 - (Math.log(Math.tan(lat_rad) + 1 / Math.cos(lat_rad)) / Math::PI)) / 2).to_i
     end
   end
 end

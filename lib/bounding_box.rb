@@ -23,20 +23,13 @@ class BoundingBox
   end
 
   def initialize(min_lon, min_lat, max_lon, max_lat)
-    @min_lon = validate_float(min_lon)
-    @min_lat = validate_float(min_lat)
-    @max_lon = validate_float(max_lon)
-    @max_lat = validate_float(max_lat)
+    @min_lon = Validator.read_float(min_lon, 'bounding box min_lon')
+    @min_lat = Validator.read_float(min_lat, 'bounding box min_lat')
+    @max_lon = Validator.read_float(max_lon, 'bounding box max_lon')
+    @max_lat = Validator.read_float(max_lat, 'bounding box max_lat')
 
     validate_boundaries
     validate_area
-  end
-
-  def validate_float(value)
-    Float(value)
-  rescue
-    raise OSM::APIBadBoundingBox,
-          "All parameters of bounding box must be float type, but it wasn't"
   end
 
   def validate_boundaries
