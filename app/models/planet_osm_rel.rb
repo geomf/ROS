@@ -35,7 +35,7 @@ class PlanetOsmRel < ActiveRecord::Base
     pt.find('member').each do |member|
       @new_members[member['role']] ||= []
 
-      proper_id = Placeholde.current.get_fixed_id(member['ref'].to_i, member['type'])
+      proper_id = Placeholder.current.get_fixed_id(member['ref'].to_i, member['type'])
       @new_members[member['role']].append(proper_id)
     end
   end

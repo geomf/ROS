@@ -22,11 +22,13 @@ Style/NumericLiterals:
   MinDigits: 15
 
 Style/Documentation:
-  Enabled: false
+  Exclude:
+   - 'db/**/*'
 
 AllCops:
   Exclude:
     - 'db/schema.rb'
+    - 'test/**/*'
 
 Lint/HandleExceptions:
   Exclude:

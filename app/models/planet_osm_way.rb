@@ -51,8 +51,7 @@ class PlanetOsmWay < ActiveRecord::Base
     nodes = pt.find('nd')
     return false if nodes.empty?
 
-    # TODO: Verify if only 2 should be available
-    fail OSM::APITooManyWayNodesError.new(id, nodes.length, 2) if nodes.length < 2
+    fail OSM::APIBadUserInput, 'Only lines with two nodes are allowed' if nodes.length != 2
 
     # TODO: check if nodes_id are already in db
     # finded_nodes = PlanetOsmNode.find(nodes)

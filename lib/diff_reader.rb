@@ -140,6 +140,6 @@ class DiffReader
     fail OSM::APIBadXMLError.new(model, xml, 'ID is always required.') \
       if xml['id'].nil?
 
-    Validator.read_int(xml['id'],'ID')
+    Validator.read_int(xml['id'], 'ID')
   end
 end

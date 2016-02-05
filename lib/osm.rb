@@ -1,5 +1,7 @@
 # Portions Copyright (C) 2015 Intel Corporation
 
+##
+# THis module contains all types of errors which API can throw
 module OSM
   require 'xml/libxml'
 
@@ -9,7 +11,6 @@ module OSM
       :internal_server_error
     end
 
-    # noinspection RubyQuotedStringsInspection
     def to_s
       'Generic API Error'
     end
@@ -93,7 +94,6 @@ module OSM
   # Raised when bad XML is encountered which stops things parsing as
   # they should.
   class APIBadXMLError < APIError
-    # noinspection RubyQuotedStringsInspection
     def initialize(model, xml, message = '')
       @model = model
       @xml = xml
@@ -215,10 +215,6 @@ module OSM
       doc = XML::Document.new
       doc.encoding = XML::Encoding::UTF_8
       root = XML::Node.new 'osm'
-      # root['version'] = API_VERSION.to_s
-      # root['generator'] = GENERATOR
-      # root['copyright'] = COPYRIGHT_OWNER
-      # root['license'] = LICENSE_URL
 
       doc.root = root
       doc
