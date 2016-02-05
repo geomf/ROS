@@ -44,8 +44,9 @@ module GeoHelper
   end
 
   def pop_tag(name, default = nil)
-    # TODO: check if tag exists
-    # fail OSM::APIPreconditionFailedError.new("Cannot create #{model_name}: data is invalid.")
+    fail OSM::APIPreconditionFailedError,
+         "Cannot create #{OSM_NAME} with ID=#{id}: data is invalid. No tags for #{name} for with"
+      if tags[name].nil?
 
     value = tags[name] || default
     tags.delete(name)

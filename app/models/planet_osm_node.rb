@@ -42,10 +42,11 @@ class PlanetOsmNode < ActiveRecord::Base
   end
 
   def check_if_can_be_deleted?
-    # TODO: Verify if node is used by any way
-    # ways = Way.joins(:way_nodes).where(:current_way_nodes => { :node_id => id }).order(:id)
-    # fail OSM::APIPreconditionFailedError,
-    #      "Node #{id} is still used by ways #{ways.collect(&:id).join(',')}." unless ways.empty?
+    ways = PlanetOsmWay.where("#{id} = ANY (nodes)")
+    fail OSM::APIPreconditionFailedError,
+         "Node #{id} is still used by ways #{ways.collect(&:id).join(',')}." \
+      unless ways.empty?
+
     true
   end
 

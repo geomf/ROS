@@ -54,14 +54,6 @@ class PlanetOsmWay < ActiveRecord::Base
     fail OSM::APIBadUserInput, 'Only lines with two nodes are allowed' if nodes.length != 2
 
     # TODO: check if nodes_id are already in db
-    # finded_nodes = PlanetOsmNode.find(nodes)
-    # db_nds = PlanetOsmNode.where(:id => new_nds).lock("for share")
-
-    # if found_nodes.length < nodes.length
-    #  missing = new_nds - db_nds.collect(&:id)
-    #  fail OSM::APIPreconditionFailedError,
-    #    "Way #{id} requires the nodes with id in (#{missing.join(',')}), which do not exist."
-    # end
   end
 
   def rerender

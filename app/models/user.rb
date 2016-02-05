@@ -12,6 +12,9 @@
 # more details.
 #
 
+##
+# class representation for elements from users table in DB
+# It is just placeholder for future implementations
 class User < ActiveRecord::Base
   # enum role: [:admin, :user, :public]
 end
