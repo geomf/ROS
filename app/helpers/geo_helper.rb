@@ -44,9 +44,9 @@ module GeoHelper
   end
 
   def pop_tag(name, default = nil)
-    fail OSM::APIPreconditionFailedError,
-         "Cannot create #{self.class::OSM_NAME}: data is invalid. No tags for #{name} type" \
-      if tags[name].nil?
+    # fail OSM::APIPreconditionFailedError,
+    #     "Cannot create #{self.class::OSM_NAME}: data is invalid. No tags for #{name} type" \
+    #  if tags[name].nil?
 
     value = tags[name] || default
     tags.delete(name)
