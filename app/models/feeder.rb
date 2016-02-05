@@ -12,6 +12,9 @@
 # more details.
 #
 
+##
+# class representation for elements from feeders table in DB
+# it has functionality to save information from db as xml
 class Feeder < ActiveRecord::Base
   def to_xml_node
     el = XML::Node.new 'feeder'

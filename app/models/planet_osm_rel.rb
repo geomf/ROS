@@ -12,6 +12,10 @@
 # more details.
 #
 
+##
+# class representation for elements from planet_osm_rel table in DB
+# it has functionality to save information from db as xml
+# and also creating new elements in db using xml with some validation
 class PlanetOsmRel < ActiveRecord::Base
   include GeoRecord
   include RelationHelper

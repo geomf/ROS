@@ -12,6 +12,10 @@
 # more details.
 #
 
+##
+# Base class-module for each of GeoElements.
+# It is an abstraction layer for allowing some interface for all geo types - create, delete, modify
+# and also getting and storing data in DB
 module GeoRecord
   include GeoHelper
   require 'xml/libxml'

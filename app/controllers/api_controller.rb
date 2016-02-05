@@ -12,27 +12,34 @@
 # more details.
 #
 
+##
+# This is main controller for this server
+# Main API endpoints are:
+#  - map - for vector tiles
+#  - upload - for uploading edits
+# Other are:
+# - list (node,way.relations) - for getting information about specified elements by id
+# - rerender - for sending request to mod_tile for rerendering whole feeder
+# - feeders - for getting basic data about feeders which are owned by specified user
+# - capabilities - DEPRECATED - currently not used for anything. Is required by ID editor
 class ApiController < ApplicationController
   require 'xml/libxml'
 
   #
-  # First the
-  # bounding box (bbox) is checked to make sure that it is sane. All nodes
-  # are searched, then all the ways that reference those nodes are found.
-  # All Nodes that are referenced by those ways are fetched and added to the
-  # list of nodes.
-  # Then all the relations that reference the already found nodes and ways are
-  # fetched. All the nodes and ways that are referenced by those ways are then
-  # fetched. Finally all the xml is returned.
+  # First the bounding box (bbox) is checked to make sure that it is sane.
+  # All ways are searched.
+  # All Nodes that are referenced by those ways are fetched and added to the list of nodes found by bounding box
+  # Then all the relations that reference the already found nodes and ways are fetched.
+  # Some nodes and ways which are describe by relations ar not been fetched!
+  # Finally all the xml is returned.
   def map
-    tile = Tile.new(params)
+    tile = Tile.new(BoundingBox.from_bbox_params(params))
 
     response.headers['Content-Disposition'] = 'attachment; filename="map.osm"'
 
     render text: tile.doc, content_type: 'text/xml'
   end
 
-  # do we need this method? maybe use it to send API version
   def capabilities
     doc = OSM::API.new.create_xml_doc
 

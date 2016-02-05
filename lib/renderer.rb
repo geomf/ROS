@@ -12,7 +12,14 @@
 # more details.
 #
 
+##
+# Data structure used for rerender foreground tiles in mod_tile after each edition
+# Mod_tile address is specified in environment variables under VCAP_SERVICES
+# Minimum and maximum zoom for re-rendering purpose are specified as Constants
 class Renderer
+  MIN_ZOOM = 11
+  MAX_ZOOM = 16
+
   def self.current
     RequestStore[:rerender]
   end
@@ -33,7 +40,7 @@ class Renderer
   def add_point(lat, lon, feeder_id)
     user_id = Feeder.find(feeder_id)
 
-    (11..16).each do |zoom|
+    (MIN_ZOOM..MAX_ZOOM).each do |zoom|
       x_tile = Converter.tile_x_from_lon(lon, zoom)
       y_tile = Converter.tile_y_from_lat(lat, zoom)
 
