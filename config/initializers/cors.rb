@@ -6,6 +6,8 @@ require 'rack/cors'
 # try and reuse a response that had a different origin, even with
 # revalidation, as the origin check will fail.
 module RailsOMF
+  ##
+  # Class which add header about allow any and all cross-origin requests to the API
   class Cors < Rack::Cors
     def call(env)
       status, headers, body = super env

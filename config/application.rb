@@ -9,6 +9,9 @@ require 'active_record/connection_adapters/postgis_adapter'
 Bundler.require(*Rails.groups)
 
 module ROS
+  ##
+  # Application class for ROS
+  # it also gets info from env and store them as config
   class Application < Rails::Application
     initializer 'active_record.initialize_database.override' do |_|
       ActiveSupport.on_load(:active_record) do

@@ -210,6 +210,8 @@ module OSM
     end
   end
 
+  ##
+  # class which creates basic XML which is return by all API endpoints
   class API
     def create_xml_doc
       doc = XML::Document.new
