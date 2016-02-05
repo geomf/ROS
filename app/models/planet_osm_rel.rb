@@ -73,6 +73,5 @@ class PlanetOsmRel < ActiveRecord::Base
 
   # it is empty by design
   def validate_element(_)
-
   end
 end
