@@ -24,6 +24,7 @@
 # - capabilities - DEPRECATED - currently not used for anything. Is required by ID editor
 class ApiController < ApplicationController
   require 'xml/libxml'
+  around_action :api_call_handle_error
 
   #
   # First the bounding box (bbox) is checked to make sure that it is sane.

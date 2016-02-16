@@ -71,15 +71,15 @@ module GeoRecord
     validate_element(pt)
 
     self.tags = read_tags_from_xml(pt)
-    self.power = pop_tag('power', 'node')
+    self.power = pop_tag('power')
     self.name = pop_tag('name', 'test_name')
 
-    self.feeder_id = pop_tag('feeder_id', 1)
+    self.feeder_id = pop_tag('feeder_id')
     DiffReader.current.changed_feeders[feeder_id.to_i] = true
 
     # TODO: should be done on client side - in ID
     CLIENT_SIDE_TAGS.each do |tag|
-      pop_tag(tag)
+      remove_tag(tag)
     end
 
     fill_other_fields_using_xml(pt)
